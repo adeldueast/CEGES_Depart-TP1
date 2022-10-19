@@ -34,7 +34,7 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
             switch (type)
             {
                 case TypeEquipmentEnumeration.Constant:
-                    equipementVM = new EquipementConstantVM() { Type = "Constant"};
+                    equipementVM = new EquipementConstantVM();
                     break;
                 case TypeEquipmentEnumeration.Lineaire:
                     equipementVM = new EquipementLineaireVM();

@@ -13,7 +13,10 @@ namespace CEGES_Services.ViewModels.EquipementVMs
 
         public int FacteurConversion { get; set; }
 
-     
 
+        public EquipementLineaireVM():base(TypeEquipmentEnumeration.Lineaire)
+        {
+
+        }
     }
 }

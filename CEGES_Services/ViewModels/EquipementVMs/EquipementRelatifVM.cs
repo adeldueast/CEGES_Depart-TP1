@@ -17,7 +17,10 @@ namespace CEGES_Services.ViewModels.EquipementVMs
         [DisplayName("Maximum")]
         public float IntensiteMax { get; set; }
 
-     
+        public EquipementRelatifVM() : base(TypeEquipmentEnumeration.Relatif)
+        {
+
+        }
 
     }
 }

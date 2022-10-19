@@ -14,6 +14,7 @@
 
 
 <form method="post" enctype="multipart/form-data" asp-action="Upsert">
+    @Html.HiddenFor(m=>m.Type)
     @if (Model.Id != 0)
     {
         <input asp-for="Id" hidden />

@@ -1,4 +1,5 @@
 ﻿using CEGES_Models;
+using CEGES_Models.Enums;
 using CEGES_Services.ViewModels.EquipementVMs;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
@@ -18,45 +19,39 @@ namespace CEGES_MVC.ModelBinders
             {
                 return null;
             }
-
             var subclasses = new[] { typeof(EquipementConstantVM), typeof(EquipementLineaireVM), typeof(EquipementRelatifVM) };
-
             var binders = new Dictionary<Type, (ModelMetadata, IModelBinder)>();
             foreach (var type in subclasses)
             {
                 var modelMetadata = context.MetadataProvider.GetMetadataForType(type);
                 binders[type] = (modelMetadata, context.CreateBinder(modelMetadata));
             }
-
-            return new EquipementVMEntityBinder(binders);
+            return new EquipementModelBinder(binders);
         }
     }
 
-    public class EquipementVMEntityBinder : IModelBinder
+    public class EquipementModelBinder : IModelBinder
     {
         private Dictionary<Type, (ModelMetadata, IModelBinder)> binders;
-
-        public EquipementVMEntityBinder(Dictionary<Type, (ModelMetadata, IModelBinder)> binders)
+        public EquipementModelBinder(Dictionary<Type, (ModelMetadata, IModelBinder)> binders)
         {
             this.binders = binders;
         }
-
         public async Task BindModelAsync(ModelBindingContext bindingContext)
         {
-            var modelKindName = ModelNames.CreatePropertyModelName(bindingContext.ModelName, nameof(EquipementVM.Type));
-            var modelTypeValue = bindingContext.ValueProvider.GetValue(modelKindName).FirstValue;
-
+            var modelTypeName = ModelNames.CreatePropertyModelName(bindingContext.ModelName, nameof(EquipementVM.Type));
+            var modelTypeValue = bindingContext.ValueProvider.GetValue(modelTypeName).FirstValue;
             IModelBinder modelBinder;
             ModelMetadata modelMetadata;
-            if (modelTypeValue == "Constant")
+            if (modelTypeValue == TypeEquipmentEnumeration.Constant)
             {
                 (modelMetadata, modelBinder) = binders[typeof(EquipementConstantVM)];
             }
-            else if (modelTypeValue == "Lineaire")
+            else if (modelTypeValue == TypeEquipmentEnumeration.Lineaire)
             {
                 (modelMetadata, modelBinder) = binders[typeof(EquipementLineaireVM)];
             }
-            else if (modelTypeValue == "Relatif")
+            else if (modelTypeValue == TypeEquipmentEnumeration.Relatif)
             {
                 (modelMetadata, modelBinder) = binders[typeof(EquipementRelatifVM)];
             }
@@ -65,17 +60,14 @@ namespace CEGES_MVC.ModelBinders
                 bindingContext.Result = ModelBindingResult.Failed();
                 return;
             }
-
             var newBindingContext = DefaultModelBindingContext.CreateBindingContext(
                 bindingContext.ActionContext,
                 bindingContext.ValueProvider,
                 modelMetadata,
                 bindingInfo: null,
                 bindingContext.ModelName);
-
             await modelBinder.BindModelAsync(newBindingContext);
             bindingContext.Result = newBindingContext.Result;
-
             if (newBindingContext.Result.IsModelSet)
             {
                 // Setting the ValidationState ensures properties on derived types are correctly 

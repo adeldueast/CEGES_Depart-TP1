@@ -15,7 +15,10 @@ namespace CEGES_Services.ViewModels.EquipementVMs
         public float Quantite { get; set; }
 
 
+        public EquipementConstantVM() : base(TypeEquipmentEnumeration.Constant)
+        {
 
-      
+        }
+
     }
 }
