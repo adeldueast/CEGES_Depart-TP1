@@ -12,9 +12,9 @@ namespace CEGES_Services.Interfaces
 
         Task<Equipement> GetById(int id);
 
-        Task<int> Add(int groupeId, Equipement equipement);
+        Task<int> Add(Equipement equipement);
 
-        Task<int> Update(int groupeId, Equipement equipement);
+        Task<int> Update(Equipement equipement);
 
 
         //Task<int> Update(int id, string nom);

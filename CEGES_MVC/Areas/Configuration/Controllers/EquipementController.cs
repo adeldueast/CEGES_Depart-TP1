@@ -37,13 +37,13 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
             switch (type)
             {
                 case TypeEquipmentEnumeration.Constant:
-                    equipementVM = new EquipementConstantVM();
+                    equipementVM = new EquipementConstantVM() { GroupeId = id };
                     break;
                 case TypeEquipmentEnumeration.Lineaire:
-                    equipementVM = new EquipementLineaireVM();
+                    equipementVM = new EquipementLineaireVM() { GroupeId = id };
                     break;
                 case TypeEquipmentEnumeration.Relatif:
-                    equipementVM = new EquipementRelatifVM();
+                    equipementVM = new EquipementRelatifVM() { GroupeId = id };
                     break;
                 default:
                     return NotFound();
@@ -62,18 +62,17 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
             switch (equipement.Type)
             {
                 case TypeEquipmentEnumeration.Constant:
-                    equipementVM = new EquipementConstantVM();
+                    equipementVM = new EquipementConstantVM() { };
                     break;
                 case TypeEquipmentEnumeration.Lineaire:
-                    equipementVM = new EquipementLineaireVM();
+                    equipementVM = new EquipementLineaireVM() { };
                     break;
                 case TypeEquipmentEnumeration.Relatif:
-                    equipementVM = new EquipementRelatifVM();
+                    equipementVM = new EquipementRelatifVM() { };
                     break;
                 default:
                     return NotFound();
             }
-
 
             return View("Upsert", equipementVM);
         }
@@ -86,22 +85,12 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
             if (ModelState.IsValid)
             {
                 //map vm to domain object
-                var  equipement = (Equipement)_mapper.Map(vm, vm.GetType(), typeof(EquipementVM));
-
+                var equipement = _mapper.Map(vm, vm.GetType(), typeof(EquipementVM)) as Equipement;
 
                 var id = vm.Id == 0
-                    ? await _equipementService.Add(3, equipement)
-                    : await _equipementService.Add(3, equipement);
+                    ? await _equipementService.Add(equipement)
+                    : await _equipementService.Update(equipement);
 
-                if (vm.Id == 0)
-                {
-                    //Ajouter l'équipement
-                    //pass groupId and equipement to add
-                }
-                else
-                {
-                    // Mettre à jour l'équipement
-                }
                 return RedirectToAction(nameof(Details), new { id = vm.Id });
             }
             return View(vm);

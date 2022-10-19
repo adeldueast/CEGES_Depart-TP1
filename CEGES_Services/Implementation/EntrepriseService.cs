@@ -53,7 +53,6 @@ namespace CEGES_Services.Implementation
 
             var entreprise = await _uow.Entreprises.GetAsync(id);
 
-
             entreprise.Nom = nom;
 
             _uow.Entreprises.Update(entreprise);

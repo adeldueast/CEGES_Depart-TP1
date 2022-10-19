@@ -17,6 +17,8 @@ namespace CEGES_Services.ViewModels.EquipementVMs
 
         public  string Type { get; set; }
 
+        public int GroupeId { get; set; }
+
         public EquipementVM(string Type)
         {
             this.Type = Type;
