@@ -54,6 +54,7 @@ namespace CEGES_Services.Implementation
             equipementDomain.Nom = equipement.Nom;
             equipementDomain.
 
+
             //_uow.Equipements.Update()
         }
     }
