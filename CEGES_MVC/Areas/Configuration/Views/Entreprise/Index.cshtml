@@ -1,0 +1,71 @@
+﻿@using CEGES_Services.ViewModels.EntrepriseVM
+@model List<EntrepriseSummaryVM>
+@{
+    ViewData["Title"] = "Configuration des entreprises";
+}
+<h3>
+    Liste des entreprises
+</h3>
+<div class="row">
+
+
+    @foreach (var entreprise in Model)
+    {
+        <div class="col mb-4">
+            <div class="card h-100" style="min-width: 15rem; max-width: 18rem;">
+                <img src="/images/entreprise.png" class="card-img-top rounded" />
+                <div class="card-body">
+                    <p class="card-title h5 text-center" ><b style="color:#2c3e50">@entreprise.Nom</b></p>
+                    <div class="card-block">
+                        <div class="row no-gutters">
+                            <div class="col-md-7 text-right">
+                                Groupe&nbsp;:&nbsp;
+                            </div>
+                            <div class="col-md-5 text-left">
+                                @entreprise.GroupesCount&nbsp;
+                            </div>
+                        </div>
+                        <div class="row no-gutters">
+                            <div class="col-md-7 text-right">
+                                Équipement&nbsp;:&nbsp;
+                            </div>
+                            <div class="col-md-5 text-left">
+                                @entreprise.EquipementsCount&nbsp;
+                            </div>
+                        </div>
+                        <div class="row no-gutters">
+                            <div class="col-md-7 text-right">
+                                Rapports&nbsp;:&nbsp;
+                            </div>
+                            <div class="col-md-5 text-left">
+                                9&nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-action="Details" asp-route-id="@entreprise.Id" class="card-link">Details</a>
+                </div>
+            </div>
+        </div>
+    }
+    
+
+
+    <div class="col mb-4">
+        <div class="card h-100" style="min-width: 15rem; max-width: 18rem;">
+            <img src="/images/entreprise.png" class="card-img-top rounded" style="opacity: 0.25" />
+            <div class="card-body">
+                <p class="card-title h5 text-center"><b style="color:#2c3e50">&nbsp;</b></p>
+                <div class="card-block">
+                    <div class="row">
+                        &nbsp;
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-action="Upsert"  class="btn btn-secondary form-control">Ajouter</a>
+            </div>
+        </div>
+    </div>
+</div>

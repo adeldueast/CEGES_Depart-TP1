@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Analyse des entreprises";
+}
+<h3>
+    Liste des entreprises
+</h3>
+<div class="row">
+    <div class="col mb-4">
+        <div class="card h-100" style="min-width: 15rem; max-width: 18rem;">
+            <img src="/images/entreprise.png" class="card-img-top rounded" />
+            <div class="card-body">
+                <p class="card-title h5 text-center"><b style="color:#2c3e50">Entreprise exemple</b></p>
+                <div class="card-block">
+                    <div class="row no-gutters">
+                        <div class="col-md-7 text-right">
+                            Rapports&nbsp;:&nbsp;
+                        </div>
+                        <div class="col-md-5 text-left">
+                            9 rapports
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-action="Liste" class="card-link">Details</a>
+            </div>
+        </div>
+    </div>
+</div>

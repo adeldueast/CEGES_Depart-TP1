@@ -1,0 +1,173 @@
+﻿@using CEGES_Services.ViewModels.EquipementVMs
+@using System.Reflection
+@model EquipementVM
+@{
+    if (Model.Id == 0)
+    {
+        ViewData["Title"] = "Ajouter un équipement";
+    }
+    else
+    {
+        ViewData["Title"] = "Modifier un équipement";
+    }
+}
+
+
+<form method="post" enctype="multipart/form-data" asp-action="Upsert">
+    @if (Model.Id != 0)
+    {
+        <input asp-for="Id" hidden />
+    }
+
+
+    <div class="border p-3">
+        <div class="form-group row">
+            <h2 class="text-info pl-3">@ViewData["Title"]</h2>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label>Groupe</label>
+                    </div>
+                    <div class="col-8">
+                        Groupe exemple
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label>Nom</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Nom" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label>Type</label>
+                    </div>
+                    <div class="col-8">
+                        @Model.Type
+                    </div>
+                </div>
+
+                @*    <div class="form-group row">
+                <div class="col-4">
+                <label>Émissions</label>
+                </div>
+                <div class="col-8">
+                <input class="form-control" /> (en tonnes par jour)
+                </div>
+                </div>*@
+
+
+
+                @switch (Model)
+                {
+                    case EquipementConstantVM c:
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <label>@Html.LabelFor(m => c.Quantite)</label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="@c.Quantite" class="form-control" />
+                                (en tonnes par jour)
+                            </div>
+                        </div>
+                        break;
+                    case EquipementLineaireVM l:
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <label>@Html.LabelFor(m => l.UniteMesure)</label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="@l.UniteMesure" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <label>@Html.LabelFor(m => l.FacteurConversion)</label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="@l.FacteurConversion" class="form-control" />
+                                (en tonnes par unité de mesure)
+                            </div>
+                        </div>
+
+                        break;
+                    case EquipementRelatifVM r:
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <label>@Html.LabelFor(m => r.IntensiteZero)</label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="@r.IntensiteZero" class="form-control" />
+                                (en tonnes par jour)
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <label>@Html.LabelFor(m => r.IntensiteMax)</label>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="@r.IntensiteMax" class="form-control" />
+                                (en tonnes par jour)
+                            </div>
+                        </div>
+                        break;
+                    default:
+                        break;
+                }
+                <div class="form-group row">
+                    <div class="col-8 offset-4 row">
+
+                        @if (Model.Id != 0)
+                        {
+                //update
+                            <div class="col">
+                                <input type="submit" class="btn btn-info w-100" value="Enregistrer" />
+                            </div>
+                            <div class="col">
+                                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary  col-10">
+                                    <i class="fas fa-plus-circle"></i> &nbsp;Retour
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                //create
+                            <div class="col">
+                                <input type="submit" onclick="return validateInput()" class="btn btn-primary w-100" value="Ajouter" />
+                            </div>
+                            <div class="col">
+                                <a asp-controller="Groupe" asp-action="Details" class="btn btn-secondary  col-10">
+                                    <i class="fas fa-plus-circle"></i> &nbsp;Retour
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div class="col-4">
+                <div>
+                    <img src="/images/equipment.png" class="mx-auto d-block" />
+                    <p>
+                        Certains équipements ont des émissions constantes peu importe leur utilisation.
+                    </p>
+                    <p>
+                        Par exemple, un bureau administratif ou un système d’éclairage utilisera toujours la même quantité d’énergie par jour ou par mois.
+                    </p>
+                    <p>
+                        Les émissions sont calculées en multipliant la quantité (en tonnes par jour) par la durée de la période à calculer.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+

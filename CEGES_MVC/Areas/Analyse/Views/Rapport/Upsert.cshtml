@@ -1,0 +1,132 @@
+﻿@model CEGES.Models.VM_Vide
+@{
+    ViewData["Title"] = "Février 2022";
+}
+
+<h3>
+    Janvier 2022
+    <small class="text-muted">(Entreprise Exemple)</small>
+</h3>
+
+<form asp-action="Upsert" method="post" enctype="multipart/form-data">
+    <div class="list-group list-group-flush">
+        <div class="list-group-item active mt-3">
+            Groupe exemple
+        </div>
+        <div class="list-group-item">
+            <div class="row">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6 font-weight-bold">
+                            Nom de l'équipement
+                        </div>
+                        <div class="col-6">
+                            Type de l'équipement
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            Formule
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    Mesure
+                </div>
+                <div class="col-3">
+                    Émissions mensuelles
+                </div>
+            </div>
+        </div>
+        <div class="list-group-item">
+            <div class="row">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6 font-weight-bold">
+                            Équipement exemple 1
+                        </div>
+                        <div class="col-6">
+                            Constant
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            10 t/j
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    &nbsp;
+                </div>
+                <div class="col-3">&nbsp;</div>
+            </div>
+        </div>
+        <div class="list-group-item">
+            <div class="row">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6 font-weight-bold">
+                            Équipement exemple 2
+                        </div>
+                        <div class="col-6">Linéaire
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            0.000567 t / pizza × 1476 pizza
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <input type="text" /> pizza
+                </div>
+                <div class="col-3">&nbsp;</div>
+            </div>
+        </div>
+        <div class="list-group-item">
+            <div class="row">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6 font-weight-bold">
+                            Équipement exemple 3
+                        </div>
+                        <div class="col-6">
+                            Relatif
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            89% de [0.120 à 0.374] t / j × 31 j
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <input type="text" /> %
+                </div>
+                <div class="col-3">&nbsp;</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row mt-3">
+        <div class="col-4 offset-4">
+            @if (Model.Id != 0)
+            {
+                //update
+                <div class="col">
+                    <input type="submit" class="btn btn-info w-100" value="Enregistrer" />
+                </div>
+            }
+            else
+            {
+                //create
+                <div class="col">
+                    <input type="submit" class="btn btn-primary w-100" value="Ajouter le rapport" />
+                </div>
+            }
+        </div>
+        <div class="col-4">
+            <a asp-action="Liste" class="btn btn-secondary w-100"><i class="fas fa-sign-out-alt"></i> Retour à Entreprise exemple</a>
+        </div>
+    </div>
+</form>

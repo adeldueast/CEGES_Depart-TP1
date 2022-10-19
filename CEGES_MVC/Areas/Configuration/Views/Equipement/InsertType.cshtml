@@ -1,0 +1,114 @@
+﻿@using CEGES_Models.Enums;
+@{
+    ViewData["Title"] = "Groupe exemple";
+}
+
+<h3>
+    Ajouter un équipement au groupe
+</h3>
+<div>
+    Veuillez sélectionner le type d'équipement que vous souhaitez ajouter. Ce type ne pourra ensuite plus être changé.
+</div>
+
+<div class="row">
+
+    <div class="col mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="card-title h5 text-center"><b style="color:#2c3e50">Constant</b></p>
+                <div class="card-block">
+                    <img src="/images/equipment.png" class="mx-auto d-block" />
+                    <p>
+                        <small>
+                            Certains équipements ont des émissions constantes peu importe leur utilisation.
+                        </small>
+                    </p>
+                    <p>
+                        <small>
+                            Par exemple, un bureau administratif ou un système d’éclairage utilisera toujours la même quantité d’énergie par jour ou par mois.
+                        </small>
+                    </p>
+                    <p>
+                        <small>
+                            Les émissions sont calculées en multipliant la quantité (en tonnes par jour) par la durée de la période à calculer.
+                        </small>
+                    </p>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-controller="Equipement" asp-action="Insert" asp-route-type="@TypeEquipmentEnumeration.Constant" class="btn btn-primary form-control">Choisir ce type</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="card-title h5 text-center"><b style="color:#2c3e50">Linéaire</b></p>
+                <div class="card-block">
+                    <img src="/images/equipment.png" class="mx-auto d-block" />
+                    <p>
+                        <small>
+                            Certains équipements ont des émissions linéaires qui sont directement proportionnelles à leur utilisation.
+                        </small>
+                    </p>
+                    <p>
+                        <small>
+                            Par exemple, un camion produira toujours la même quantité d’émissions par kilomètre parcouru.
+                        </small>
+                    </p>
+                    <p>
+                        <small>
+                            Les émissions sont calculées en multipliant le facteur de conversion par l’utilisation de l’équipement durant la période.
+                        </small>
+                    </p>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-controller="Equipement" asp-action="Insert" asp-route-type="@TypeEquipmentEnumeration.Lineaire" class="btn btn-primary form-control">Choisir ce type</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="card-title h5 text-center"><b style="color:#2c3e50">Relatif</b></p>
+                <div class="card-block">
+                    <img src="/images/equipment.png" class="mx-auto d-block" />
+                    <p>
+                        <small>
+                            Certains équipements ont des émissions proportionnelles à l’intensité de leur utilisation.
+                        </small>
+                    </p>
+                    <p>
+                        <small>
+                            Par exemple, une aluminerie produira toujours une certaine quantité d’émissions même sans être utilisée (à 0% d’intensité), et les émissions augmenteront ensuite proportionnellement jusqu’à l’utilisation maximum de l’aluminerie (à 100% d’intensité).
+
+                        </small>
+                    </p>
+                    <p>
+                        <small>
+                            Les émissions (en tonnes par jour) sont calculées en faisant une interpolation (une règle de trois) entre l’émission à intensité nulle et l’émission à intensité maximale selon l’intensité moyenne durant la période. Cette émission moyenne est ensuite multipliée par la durée de la période.
+
+                        </small>
+                    </p>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-controller="Equipement" asp-action="Insert" asp-route-id="@ViewContext.RouteData.Values["id"]" asp-route-type="@TypeEquipmentEnumeration.Relatif" class="btn btn-primary form-control">Choisir ce type</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row pb-3 backgroundWhite">
+    <div class="col-4 pb-2 align-items-end">
+        <a asp-controller="Groupe" asp-action="Details" class="btn btn-secondary  col-10">
+            <i class="fas fa-plus-circle"></i> &nbsp;Retour à Groupe exemple
+        </a>
+    </div>
+</div>

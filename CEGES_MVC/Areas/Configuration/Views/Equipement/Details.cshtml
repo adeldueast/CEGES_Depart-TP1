@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Équipement exemple";
+}
+
+<h3>
+    Équipement exemple
+    <small class="text-muted">(Équipement)</small>
+</h3>
+<div class="row pb-3 backgroundWhite">
+    <div class="col-4 col-sm-12">
+        <a asp-area="Configuration" asp-controller="Equipement" asp-action="Update" class="btn btn-secondary  col-10">
+            <i class="fas fa-plus-circle"></i> &nbsp;Modifier l'équipement
+        </a>
+    </div>
+</div>
+
+<div class="row pb-3 backgroundWhite">
+    <div class="col-6">
+        <div class="row no-gutters">
+            <div class="col-md-7 text-right">
+                Type&nbsp;:&nbsp;
+            </div>
+            <div class="col-md-5 text-left">
+                Constant
+            </div>
+        </div>
+        <div class="row no-gutters">
+            <div class="col-md-7 text-right">
+                Émissions&nbsp;:&nbsp;
+            </div>
+            <div class="col-md-5 text-left">
+                10 t/j
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div>
+            <img src="/images/equipment.png" class="mx-auto d-block" />
+            <p>
+                Certains équipements ont des émissions constantes peu importe leur utilisation.
+            </p>
+            <p>
+                Par exemple, un bureau administratif ou un système d’éclairage utilisera toujours la même quantité d’énergie par jour ou par mois.
+            </p>
+            <p>
+                Les émissions sont calculées en multipliant la quantité (en tonnes par jour) par la durée de la période à calculer.
+            </p>
+        </div>
+    </div>
+</div>
+<div class="row pb-3 backgroundWhite">
+    <div class="col-4 pb-2 align-items-end">
+        <a asp-controller="Groupe" asp-action="Details" class="btn btn-secondary  col-10">
+            <i class="fas fa-plus-circle"></i> &nbsp;Retour à Groupe exemple
+        </a>
+    </div>
+</div>

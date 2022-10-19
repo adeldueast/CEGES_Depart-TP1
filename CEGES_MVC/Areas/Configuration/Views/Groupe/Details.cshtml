@@ -1,0 +1,69 @@
+﻿@using CEGES_Services.ViewModels.GroupeVMs
+@model GroupeDetailsVM
+@{
+    ViewData["Title"] = "Groupe exemple";
+}
+
+<h3>
+    Groupe exemple
+    <small class="text-muted">(Groupe)</small>
+</h3>
+<div class="row pb-3 backgroundWhite">
+    <div class="col-md-4 col-sm-12">
+        <a asp-controller="Groupe" asp-action="Update" class="btn btn-secondary w-100">
+            <i class="fas fa-plus-circle"></i> &nbsp;Modifier le groupe
+        </a>
+    </div>
+</div>
+@{
+    <div class="row">
+        <div class="col mb-4">
+            <div class="card h-100" style="min-width: 15rem; max-width: 18rem;">
+                <img src="/images/equipment.png" class="card-img-top rounded"/>
+                <div class="card-body">
+                    <p class="card-title h5 text-center"><b style="color:#2c3e50">Équipement exemple</b></p>
+                    <div class="card-block">
+                        <div class="row no-gutters">
+                            <div class="col-md-7 text-right">
+                                Type&nbsp;:&nbsp;
+                            </div>
+                            <div class="col-md-5 text-left">
+                                Constant
+                            </div>
+                        </div>
+
+                        <div class="row no-gutters">
+                            <div class="col-md-7 text-right">
+                                Émissions&nbsp;:&nbsp;
+                            </div>
+                            <div class="col-md-5 text-left">
+                                10 t/j
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-controller="Equipement" asp-action="Details" class="card-link">Details</a>
+                </div>
+            </div>
+        </div>
+        <div class="col mb-4">
+            <div class="card h-100" style="min-width: 15rem; max-width: 18rem;">
+                <img src="/images/equipment.png" class="card-img-top rounded" style="opacity: 0.25" />
+                <div class="card-body">
+                    <p class="card-title h5 text-center"><b style="color:#2c3e50">&nbsp;</b></p>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-controller="Equipement" asp-action="InsertType" asp-route-id="@Model.Id" class="btn btn-secondary form-control">Ajouter</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div class="row pb-3 backgroundWhite">
+    <div class="col-4 pb-2 align-items-end">
+        <a asp-controller="Entreprise" asp-action="Details" class="btn btn-secondary  col-10">
+            <i class="fas fa-plus-circle"></i> &nbsp;Retour à Entreprise exemple
+        </a>
+    </div>
+</div>
