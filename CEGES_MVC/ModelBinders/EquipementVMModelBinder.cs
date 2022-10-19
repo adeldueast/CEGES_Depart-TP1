@@ -26,14 +26,14 @@ namespace CEGES_MVC.ModelBinders
                 var modelMetadata = context.MetadataProvider.GetMetadataForType(type);
                 binders[type] = (modelMetadata, context.CreateBinder(modelMetadata));
             }
-            return new EquipementModelBinder(binders);
+            return new EquipementVMModelBinder(binders);
         }
     }
 
-    public class EquipementModelBinder : IModelBinder
+    public class EquipementVMModelBinder : IModelBinder
     {
         private Dictionary<Type, (ModelMetadata, IModelBinder)> binders;
-        public EquipementModelBinder(Dictionary<Type, (ModelMetadata, IModelBinder)> binders)
+        public EquipementVMModelBinder(Dictionary<Type, (ModelMetadata, IModelBinder)> binders)
         {
             this.binders = binders;
         }

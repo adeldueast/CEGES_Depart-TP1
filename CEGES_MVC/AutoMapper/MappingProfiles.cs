@@ -18,12 +18,14 @@ namespace CEGES_MVC.AutoMapper
             //see docs: https://docs.automapper.org/en/stable/Mapping-inheritance.html
 
             // maybe delete later
-            CreateMap<Equipement, EquipementVM>();
+            //CreateMap<Equipement, EquipementVM>();
 
+            CreateMap<Equipement, EquipementVM>()
+                   .Include<EquipementConstant, EquipementConstantVM>()
+                   .Include<EquipementLineaire, EquipementLineaireVM>()
+                   .Include<EquipementRelatif, EquipementRelatifVM>();
             CreateMap<EquipementConstant, EquipementConstantVM>();
-
             CreateMap<EquipementLineaire, EquipementLineaireVM>();
-
             CreateMap<EquipementRelatif, EquipementRelatifVM>();
 
 

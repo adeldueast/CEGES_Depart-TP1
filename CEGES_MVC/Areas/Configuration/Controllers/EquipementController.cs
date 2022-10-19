@@ -1,4 +1,5 @@
-﻿using CEGES.Models;
+﻿using AutoMapper;
+using CEGES.Models;
 using CEGES_Models;
 using CEGES_Models.Enums;
 using CEGES_Services.Interfaces;
@@ -14,11 +15,13 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
 
         private readonly IGroupeService _groupeService;
         private readonly IEquipementService _equipementService;
+        private readonly IMapper _mapper;
 
-        public EquipementController(IGroupeService groupeService, IEquipementService equipementService)
+        public EquipementController(IGroupeService groupeService, IEquipementService equipementService, IMapper mapper)
         {
             _groupeService = groupeService;
             _equipementService = equipementService;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> InsertType(int id)
@@ -80,15 +83,20 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upsert(EquipementVM vm)
         {
-
             if (ModelState.IsValid)
             {
+                //map vm to domain object
+                var  equipement = (Equipement)_mapper.Map(vm, vm.GetType(), typeof(EquipementVM));
+
+
+                var id = vm.Id == 0
+                    ? await _equipementService.Add(3, equipement)
+                    : await _equipementService.Add(3, equipement);
+
                 if (vm.Id == 0)
                 {
                     //Ajouter l'équipement
-                    Equipement equipement = new EquipementConstant();
                     //pass groupId and equipement to add
-                    var id = await _equipementService.Add(3, equipement);
                 }
                 else
                 {

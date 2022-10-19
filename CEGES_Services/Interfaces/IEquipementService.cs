@@ -14,6 +14,9 @@ namespace CEGES_Services.Interfaces
 
         Task<int> Add(int groupeId, Equipement equipement);
 
+        Task<int> Update(int groupeId, Equipement equipement);
+
+
         //Task<int> Update(int id, string nom);
     }
 }
