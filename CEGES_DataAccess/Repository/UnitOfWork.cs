@@ -10,12 +10,10 @@ namespace CEGES_DataAccess.Repository
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
-
             Entreprises = new EntrepriseRepository(_db);
             Groupes = new GroupeRepository(_db);
             Equipements = new EquipementRepository(_db);
             Rapports = new RapportRepository(_db);
-
         }
 
 

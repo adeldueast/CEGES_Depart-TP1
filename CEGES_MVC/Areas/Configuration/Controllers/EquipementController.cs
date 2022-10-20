@@ -58,17 +58,21 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
         public async Task<IActionResult> Update(int id)
         {
             var equipement = await _equipementService.GetById(id);
+
+            //var mapped = _mapper.Map(equipement, equipement.GetType(), typeof(EquipementVM));
+
+
             EquipementVM equipementVM;
             switch (equipement.Type)
             {
                 case TypeEquipmentEnumeration.Constant:
-                    equipementVM = new EquipementConstantVM() { };
+                    equipementVM = _mapper.Map<EquipementConstantVM>(equipement);
                     break;
                 case TypeEquipmentEnumeration.Lineaire:
-                    equipementVM = new EquipementLineaireVM() { };
+                    equipementVM = _mapper.Map<EquipementLineaireVM>(equipement);
                     break;
                 case TypeEquipmentEnumeration.Relatif:
-                    equipementVM = new EquipementRelatifVM() { };
+                    equipementVM = _mapper.Map<EquipementRelatifVM>(equipement);
                     break;
                 default:
                     return NotFound();
@@ -84,8 +88,10 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                var type = vm.GetType();
                 //map vm to domain object
-                var equipement = _mapper.Map(vm, vm.GetType(), typeof(EquipementVM)) as Equipement;
+                var equipement = _mapper.Map(vm, vm.GetType(), typeof(Equipement)) as Equipement;
 
                 var id = vm.Id == 0
                     ? await _equipementService.Add(equipement)
@@ -93,6 +99,7 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
 
                 return RedirectToAction(nameof(Details), new { id = vm.Id });
             }
+            
             return View(vm);
 
         }
@@ -100,7 +107,10 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            await Task.CompletedTask;
+
+            var equipement = _equipementService.GetById(id);
+
+           
             return View();
         }
     }

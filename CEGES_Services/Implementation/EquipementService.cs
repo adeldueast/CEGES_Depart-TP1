@@ -31,31 +31,20 @@ namespace CEGES_Services.Implementation
 
         public async Task<int> Add(Equipement equipement)
         {
-
             _uow.Equipements.Add(equipement);
 
             await _uow.SaveChangesAsync();
 
             return equipement.Id;
-
-
         }
 
 
         public async Task<int> Update(Equipement equipement)
         {
-            var equipementDomain = await _uow.Equipements.GetAsync(equipement.Id);
-
-            if (equipementDomain == null)
-            {
-                throw new NotFoundException("Equipement", equipement.Id);
-            }
-
-            equipementDomain.Nom = equipement.Nom;
-            equipementDomain.
-
-
-            //_uow.Equipements.Update()
+            
+            _uow.Equipements.Update(equipement);
+            await _uow.SaveChangesAsync();
+            return equipement.Id;
         }
     }
 }

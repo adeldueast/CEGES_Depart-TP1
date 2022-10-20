@@ -19,10 +19,12 @@ namespace CEGES_MVC.AutoMapper
             CreateMap<Equipement, EquipementVM>()
                    .Include<EquipementConstant, EquipementConstantVM>()
                    .Include<EquipementLineaire, EquipementLineaireVM>()
-                   .Include<EquipementRelatif, EquipementRelatifVM>();
-            CreateMap<EquipementConstant, EquipementConstantVM>();
-            CreateMap<EquipementLineaire, EquipementLineaireVM>();
-            CreateMap<EquipementRelatif, EquipementRelatifVM>();
+                   .Include<EquipementRelatif, EquipementRelatifVM>()
+                   .ReverseMap();
+
+            CreateMap<EquipementConstant, EquipementConstantVM>().ReverseMap();
+            CreateMap<EquipementLineaire, EquipementLineaireVM>().ReverseMap();
+            CreateMap<EquipementRelatif, EquipementRelatifVM>().ReverseMap();
 
 
 

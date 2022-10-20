@@ -16,18 +16,19 @@ namespace CEGES_DataAccess.Persistence
         public DbSet<Entreprise> Entreprises { get; set; }
         public DbSet<Groupe> Groupes { get; set; }
         public DbSet<Rapport> Rapports { get; set; }
+
         public DbSet<EquipementConstant> EquipementConstants { get; set; }
         public DbSet<EquipementLineaire> EquipementLineaires { get; set; }
         public DbSet<EquipementRelatif> EquipementRelatifs { get; set; }
 
-
+         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Equipement>()
                 .ToTable("Equipements")
                 .HasDiscriminator(e => e.Type)
                 .HasValue<EquipementConstant>("Constant")
-                .HasValue<EquipementLineaire>("Linéaire")
+                .HasValue<EquipementLineaire>("Lineaire")
                 .HasValue<EquipementRelatif>("Relatif");
 
             modelBuilder.Entity<Equipement>()

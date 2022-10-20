@@ -1,6 +1,7 @@
 ﻿using CEGES_DataAccess.Persistence;
 using CEGES_DataAccess.Repository.IRepository;
 using CEGES_Models;
+using CEGES_Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace CEGES_DataAccess.Repository
 
         public void Update(Equipement equipement)
         {
-            throw new NotImplementedException();
+            _db.Update(equipement);
         }
     }
 }
