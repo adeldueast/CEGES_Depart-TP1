@@ -44,15 +44,15 @@ namespace CEGES_MVC.ModelBinders
             var modelTypeValue = bindingContext.ValueProvider.GetValue(modelTypeName).FirstValue;
             IModelBinder modelBinder;
             ModelMetadata modelMetadata;
-            if (modelTypeValue == TypeEquipmentEnumeration.Constant)
+            if (modelTypeValue == EquipementTypes.Constant)
             {
                 (modelMetadata, modelBinder) = binders[typeof(EquipementConstantVM)];
             }
-            else if (modelTypeValue == TypeEquipmentEnumeration.Lineaire)
+            else if (modelTypeValue == EquipementTypes.Lineaire)
             {
                 (modelMetadata, modelBinder) = binders[typeof(EquipementLineaireVM)];
             }
-            else if (modelTypeValue == TypeEquipmentEnumeration.Relatif)
+            else if (modelTypeValue == EquipementTypes.Relatif)
             {
                 (modelMetadata, modelBinder) = binders[typeof(EquipementRelatifVM)];
             }

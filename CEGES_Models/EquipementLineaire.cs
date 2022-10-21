@@ -12,5 +12,7 @@ namespace CEGES_Models
         public string UniteMesure { get; set; }
 
         public int FacteurConversion { get; set; }
+
+        public sealed override string Description { get; } = EquipementDescriptions.Lineaire;
     }
 }

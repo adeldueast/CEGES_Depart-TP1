@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CEGES_Models.Enums
 {
-    public static class TypeEquipmentEnumeration
+    public static class EquipementTypes
     {
         public const string Constant = "Constant";
 

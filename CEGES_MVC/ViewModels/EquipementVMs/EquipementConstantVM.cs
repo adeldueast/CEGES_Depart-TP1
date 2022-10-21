@@ -12,13 +12,13 @@ namespace CEGES_MVC.ViewModels.EquipementVMs
     public class EquipementConstantVM : EquipementVM
     {
 
-        //certain
+   
 
         [DisplayName("Émissions")]
         public float Quantite { get; set; }
 
 
-        public EquipementConstantVM() : base(TypeEquipmentEnumeration.Constant)
+        public EquipementConstantVM() : base(EquipementTypes.Constant, EquipementDescriptions.Constant)
         {
 
         }

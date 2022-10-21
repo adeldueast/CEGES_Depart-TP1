@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CEGES_Services\CEGES_Services.csproj" />
+    <ProjectReference Include="..\CEGES_Util\CEGES_Util.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1development_1json__JsonSchema="D" appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

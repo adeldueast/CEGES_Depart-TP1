@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,9 @@ namespace CEGES_Models
         public Groupe Groupe { get; set; }
 
         public List<Rapport> Rapports { get; set; }
+
+        [NotMapped]
+        public abstract string Description { get; }
     }
 
 }

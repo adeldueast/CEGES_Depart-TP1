@@ -11,5 +11,8 @@ namespace CEGES_Models
     {
         public float Quantite { get; set; }
 
+        public sealed override string Description { get; } = EquipementDescriptions.Constant;
+
+
     }
 }

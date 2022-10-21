@@ -33,18 +33,21 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
 
         public IActionResult Insert(int id, [FromQuery] string type)
         {
+
+            //TODO:Check that id is an existing entity (groupe)
+
             //Ici, pas le choix de faire un switch case pour determiner le type d'equipement. On ne px pas utiliser le mapper
             //il est important de specifier le groupe Id de l'equipement que nous allons creer afin de creer une relation
             EquipementVM equipementVM;
             switch (type)
             {
-                case TypeEquipmentEnumeration.Constant:
+                case EquipementTypes.Constant:
                     equipementVM = new EquipementConstantVM() { GroupeId = id };
                     break;
-                case TypeEquipmentEnumeration.Lineaire:
+                case EquipementTypes.Lineaire:
                     equipementVM = new EquipementLineaireVM() { GroupeId = id };
                     break;
-                case TypeEquipmentEnumeration.Relatif:
+                case EquipementTypes.Relatif:
                     equipementVM = new EquipementRelatifVM() { GroupeId = id };
                     break;
                 default:
@@ -84,10 +87,11 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
             //Methode (2)
             //Mapp Domain entité vers VM
             var equipementVM = _mapper.Map(equipement, equipement.GetType(), typeof(EquipementVM)) as EquipementVM;
+          
+
 
             return View("Upsert", equipementVM);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -96,9 +100,11 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
             if (ModelState.IsValid)
             {
 
+
                 //map VM to Domain Entité utilisant _mapper 
                 var equipement = _mapper.Map(vm, vm.GetType(), typeof(Equipement)) as Equipement;
 
+                
                 var id = vm.Id == 0
                     ? await _equipementService.Add(equipement)
                     : await _equipementService.Update(equipement);
@@ -113,9 +119,9 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
+
             //Fetch lentité et throw erreur s'il n'existe pas
             var equipement = await _equipementService.GetById(id);
-
             //map Domain entité vers VM pour la view
             var vm = _mapper.Map(equipement, equipement.GetType(), typeof(EquipementVM)) as EquipementVM;
             return View(vm);

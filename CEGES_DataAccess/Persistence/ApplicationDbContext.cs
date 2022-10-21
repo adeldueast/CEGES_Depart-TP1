@@ -37,9 +37,9 @@ namespace CEGES_DataAccess.Persistence
             modelBuilder.Entity<Equipement>()
                 .ToTable("Equipements")
                 .HasDiscriminator(e => e.Type)
-                .HasValue<EquipementConstant>(TypeEquipmentEnumeration.Constant)
-                .HasValue<EquipementLineaire>(TypeEquipmentEnumeration.Lineaire)
-                .HasValue<EquipementRelatif>(TypeEquipmentEnumeration.Relatif);
+                .HasValue<EquipementConstant>(EquipementTypes.Constant)
+                .HasValue<EquipementLineaire>(EquipementTypes.Lineaire)
+                .HasValue<EquipementRelatif>(EquipementTypes.Relatif);
 
             modelBuilder.Entity<Equipement>()
                  .Property(e => e.Type)

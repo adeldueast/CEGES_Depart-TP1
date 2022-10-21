@@ -11,14 +11,13 @@ namespace CEGES_MVC.ViewModels.EquipementVMs
     public class EquipementLineaireVM : EquipementVM
     {
         [DisplayName("Unité de mesure")]
-
         public string UniteMesure { get; set; }
 
         [DisplayName("Facteur de conversion")]
         public int FacteurConversion { get; set; }
 
 
-        public EquipementLineaireVM() : base(TypeEquipmentEnumeration.Lineaire)
+        public EquipementLineaireVM() : base(EquipementTypes.Lineaire,EquipementDescriptions.Lineaire)
         {
 
         }
