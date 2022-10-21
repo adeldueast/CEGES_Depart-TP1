@@ -20,7 +20,7 @@ namespace CEGES_Services.Implementation
 
         public async Task<Groupe> GetById(int id)
         {
-            var groupe = await _uow.Groupes.GetByIdIncludeEquipements(id);
+            var groupe = await _uow.Groupes.GetByIdIncludeEntrepriseAndEquipements(id);
 
             if (groupe == null)
             {

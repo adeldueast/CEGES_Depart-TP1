@@ -1,14 +1,16 @@
-﻿@{
+﻿@using CEGES_Services.ViewModels.EquipementVMs
+@model EquipementVM
+@{
     ViewData["Title"] = "Équipement exemple";
 }
 
 <h3>
-    Équipement exemple
+    @Model.Nom
     <small class="text-muted">(Équipement)</small>
 </h3>
 <div class="row pb-3 backgroundWhite">
     <div class="col-4 col-sm-12">
-        <a asp-area="Configuration" asp-controller="Equipement" asp-action="Update" class="btn btn-secondary  col-10">
+        <a asp-area="Configuration" asp-controller="Equipement"  asp-action="Update" asp-route-id="@Model.Id" class="btn btn-secondary  col-10">
             <i class="fas fa-plus-circle"></i> &nbsp;Modifier l'équipement
         </a>
     </div>
@@ -21,17 +23,56 @@
                 Type&nbsp;:&nbsp;
             </div>
             <div class="col-md-5 text-left">
-                Constant
+                @Model.Type
             </div>
         </div>
-        <div class="row no-gutters">
-            <div class="col-md-7 text-right">
-                Émissions&nbsp;:&nbsp;
-            </div>
-            <div class="col-md-5 text-left">
-                10 t/j
-            </div>
-        </div>
+
+
+        @switch (Model)
+        {
+            case EquipementConstantVM c:
+                <div class="row no-gutters">
+                    <div class="col-md-7 text-right">
+                        Émissions&nbsp;:&nbsp;
+                    </div>
+                    <div class="col-md-5 text-left">
+                        @c.Quantite t/j
+                    </div>
+                </div>
+                break;
+            case EquipementLineaireVM l:
+                <div class="row no-gutters">
+                    <div class="col-md-7 text-right">
+                        Facteur de conversion&nbsp;:&nbsp;
+                    </div>
+                    <div class="col-md-5 text-left">
+                        @l.FacteurConversion/@l.UniteMesure
+                    </div>
+                </div>
+                break;
+            case EquipementRelatifVM r:
+                <div class="row no-gutters">
+                    <div class="col-md-7 text-right">
+                        @Html.DisplayNameFor(m=>r.IntensiteZero) (0%)&nbsp;:&nbsp;
+                    </div>
+                    <div class="col-md-5 text-left">
+                        @Html.DisplayFor(m=>r.IntensiteZero) t/j
+                    </div>
+                </div>
+
+                <div class="row no-gutters">
+                    <div class="col-md-7 text-right">
+                        @Html.DisplayNameFor(m=>r.IntensiteMax) (100%)&nbsp;:&nbsp;
+                    </div>
+                    <div class="col-md-5 text-left">
+                        @Html.DisplayFor(m=>r.IntensiteMax) t/j
+                    </div>
+                </div>
+                break;
+
+            default:
+                break;
+        }
     </div>
     <div class="col-6">
         <div>
@@ -50,7 +91,7 @@
 </div>
 <div class="row pb-3 backgroundWhite">
     <div class="col-4 pb-2 align-items-end">
-        <a asp-controller="Groupe" asp-action="Details" class="btn btn-secondary  col-10">
+        <a asp-controller="Groupe" asp-action="Details" asp-route-id="@Model.GroupeId"  class="btn btn-secondary  col-10">
             <i class="fas fa-plus-circle"></i> &nbsp;Retour à Groupe exemple
         </a>
     </div>

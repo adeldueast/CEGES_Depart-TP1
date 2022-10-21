@@ -45,7 +45,8 @@ namespace CEGES_DataAccess.Repository
         includeProperties permet le lié avec Include
         isTracking, par défaut dans EF Core, utile mais diminue la performance. Pour Retreive seulement: peut être false
       */
-        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = null)
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, 
+            string includeProperties = null)
         {
             IQueryable<T> query = dbset;
             if (filter != null)

@@ -17,7 +17,7 @@ namespace CEGES_Services.Implementation
 
         public EntrepriseService(IUnitOfWork uow) => _uow = uow;
 
-        public async Task<IEnumerable<Entreprise>> GetAllSummaries() => await _uow.Entreprises.GetAllIncludeGroupesAndEquipements();
+        public async Task<IEnumerable<Entreprise>> GetAll() => await _uow.Entreprises.GetAllIncludeGroupesAndEquipements();
 
         public async Task<Entreprise> GetById(int id)
         {

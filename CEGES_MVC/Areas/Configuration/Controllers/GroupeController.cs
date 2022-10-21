@@ -12,9 +12,7 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
     public class GroupeController : Controller
     {
         private readonly IGroupeService _groupeService;
-
         private readonly IEntrepriseService _entrepriseService;
-
         private readonly IMapper _mapper;
 
         public GroupeController(IGroupeService groupeService, IEntrepriseService entrepriseService, IMapper mapper)
@@ -26,11 +24,13 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
+            //will throw erreur group nexiste pas (not handled proprement)
             var groupe = await _groupeService.GetById(id);
 
-            var dest = _mapper.Map<GroupeDetailsVM>(groupe);
+            //mapping  domain to vm
+            var vm = _mapper.Map<GroupeDetailsVM>(groupe);
 
-            return View(dest);
+            return View(vm);
         }
 
         public async Task<IActionResult> Insert(int id)
@@ -42,12 +42,11 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
 
         }
 
-        public async Task<IActionResult> Update(int groupeId)
+        public async Task<IActionResult> Update(int id)
         {
             //il faut valider que le groupe existe avant de le modifier
-            var groupe = await _groupeService.GetById(groupeId);
-
-            return View("Upsert", new GroupeUpsertVM() { Id = groupeId, EntrepriseId = groupe.Entreprise.Id, EntrepriseNom = groupe.Entreprise.Nom });
+            var groupe = await _groupeService.GetById(id);
+            return View("Upsert", new GroupeUpsertVM() { Id = id, Nom= groupe.Nom, EntrepriseId = groupe.EntrepriseId, EntrepriseNom = groupe.Entreprise.Nom, });
         }
 
 
@@ -59,7 +58,6 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
 
             if (ModelState.IsValid)
             {
-
                 var id = vm.Id == 0
                     ? await _groupeService.Add(vm.EntrepriseId, vm.Nom)
                     : await _groupeService.Update(vm.Id, vm.Nom);

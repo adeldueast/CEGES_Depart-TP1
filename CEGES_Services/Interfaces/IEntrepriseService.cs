@@ -11,7 +11,7 @@ namespace CEGES_Services.Interfaces
     public interface IEntrepriseService
     {
 
-        Task<IEnumerable<Entreprise>> GetAllSummaries();
+        Task<IEnumerable<Entreprise>> GetAll();
 
 
         Task<Entreprise> GetById(int id);

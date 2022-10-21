@@ -26,6 +26,7 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
 
         public async Task<IActionResult> InsertType(int id)
         {
+            //Fecht le groupe avec Id , et throw error s'il n'existe pas. Ne renvoie rien à la Vue.
             var groupe = await _groupeService.GetById(id);
 
             return View();
@@ -33,6 +34,8 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
 
         public IActionResult Insert(int id, [FromQuery] string type)
         {
+            //Ici, pas le choix de faire un switch case pour determiner le type d'equipement. On ne px pas utiliser le mapper
+            //il est important de specifier le groupe Id de l'equipement que nous allons creer afin de creer une relation
             EquipementVM equipementVM;
             switch (type)
             {
@@ -58,25 +61,30 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
         public async Task<IActionResult> Update(int id)
         {
             var equipement = await _equipementService.GetById(id);
+            //Contrairement au Insert, nous ne devons pas specifier le Id du groupe, car nous allons updater un equipement déja existant, ayant déja un groupe.
+            //Deux méthode pour mapper, soit manuellement (1) ou en utilisant les profiles AutoMapper (2)
 
-            //var mapped = _mapper.Map(equipement, equipement.GetType(), typeof(EquipementVM));
 
+            //Methode (1)
+            ////EquipementVM equipementVM;
+            //switch (equipement.Type)
+            //{
+            //    case TypeEquipmentEnumeration.Constant:
+            //        equipementVM = _mapper.Map<EquipementConstantVM>(equipement);
+            //        break;
+            //    case TypeEquipmentEnumeration.Lineaire:
+            //        equipementVM = _mapper.Map<EquipementLineaireVM>(equipement);
+            //        break;
+            //    case TypeEquipmentEnumeration.Relatif:
+            //        equipementVM = _mapper.Map<EquipementRelatifVM>(equipement);
+            //        break;
+            //    default:
+            //        return NotFound();
+            //}
 
-            EquipementVM equipementVM;
-            switch (equipement.Type)
-            {
-                case TypeEquipmentEnumeration.Constant:
-                    equipementVM = _mapper.Map<EquipementConstantVM>(equipement);
-                    break;
-                case TypeEquipmentEnumeration.Lineaire:
-                    equipementVM = _mapper.Map<EquipementLineaireVM>(equipement);
-                    break;
-                case TypeEquipmentEnumeration.Relatif:
-                    equipementVM = _mapper.Map<EquipementRelatifVM>(equipement);
-                    break;
-                default:
-                    return NotFound();
-            }
+            //Methode (2)
+            //Mapp Domain entité vers VM
+            var equipementVM = _mapper.Map(equipement, equipement.GetType(), typeof(EquipementVM)) as EquipementVM;
 
             return View("Upsert", equipementVM);
         }
@@ -89,17 +97,16 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
             if (ModelState.IsValid)
             {
 
-                var type = vm.GetType();
-                //map vm to domain object
+                //map VM to Domain Entité utilisant _mapper 
                 var equipement = _mapper.Map(vm, vm.GetType(), typeof(Equipement)) as Equipement;
 
                 var id = vm.Id == 0
                     ? await _equipementService.Add(equipement)
                     : await _equipementService.Update(equipement);
 
-                return RedirectToAction(nameof(Details), new { id = vm.Id });
+                return RedirectToAction(nameof(Details), new { id = id });
             }
-            
+
             return View(vm);
 
         }
@@ -107,11 +114,12 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
+            //Fetch lentité et throw erreur s'il n'existe pas
+            var equipement = await _equipementService.GetById(id);
 
-            var equipement = _equipementService.GetById(id);
-
-           
-            return View();
+            //map Domain entité vers VM pour la view
+            var vm = _mapper.Map(equipement, equipement.GetType(), typeof(EquipementVM)) as EquipementVM;
+            return View(vm);
         }
     }
 }
