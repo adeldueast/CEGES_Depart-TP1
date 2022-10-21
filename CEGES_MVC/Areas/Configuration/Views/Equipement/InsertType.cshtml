@@ -104,10 +104,10 @@
     </div>
 
 </div>
-
+ @*asp-route-id="@ViewContext.RouteData.Values["id"]" retourn la valeur de "id" dans le URL courant*@
 <div class="row pb-3 backgroundWhite">
     <div class="col-4 pb-2 align-items-end">
-        <a asp-controller="Groupe" asp-action="Details" class="btn btn-secondary  col-10">
+        <a asp-controller="Groupe" asp-action="Details" asp-route-id="@ViewContext.RouteData.Values["id"]" class="btn btn-secondary  col-10">
             <i class="fas fa-plus-circle"></i> &nbsp;Retour à Groupe exemple
         </a>
     </div>
