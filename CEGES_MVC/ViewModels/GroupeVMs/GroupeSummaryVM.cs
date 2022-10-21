@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CEGES_Services.ViewModels.GroupeVMs;
 
-namespace CEGES_Services.ViewModels.EntrepriseVM
+namespace CEGES_MVC.ViewModels.GroupeVMs
 {
-    public class EntrepriseDetailsVM
+    public class GroupeSummaryVM
     {
+
         public int Id { get; set; }
 
         public string Nom { get; set; }
 
-        public List<GroupeSummaryVM> Groupes { get; set; }
+        public int EquipementCount { get; set; }
     }
 }

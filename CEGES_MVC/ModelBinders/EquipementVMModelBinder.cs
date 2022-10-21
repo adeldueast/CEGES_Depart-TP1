@@ -1,6 +1,6 @@
 ﻿using CEGES_Models;
 using CEGES_Models.Enums;
-using CEGES_Services.ViewModels.EquipementVMs;
+using CEGES_MVC.ViewModels.EquipementVMs;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
@@ -33,6 +33,7 @@ namespace CEGES_MVC.ModelBinders
     public class EquipementVMModelBinder : IModelBinder
     {
         private Dictionary<Type, (ModelMetadata, IModelBinder)> binders;
+
         public EquipementVMModelBinder(Dictionary<Type, (ModelMetadata, IModelBinder)> binders)
         {
             this.binders = binders;

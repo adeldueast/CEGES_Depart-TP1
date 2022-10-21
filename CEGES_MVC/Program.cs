@@ -9,8 +9,8 @@ using Microsoft.Extensions.Configuration;
 using CEGES_DataAccess.Persistence;
 using CEGES_DataAccess.Repository;
 using CEGES_DataAccess.Repository.IRepository;
-using CEGES_Services.Interfaces;
-using CEGES_Services.Implementation;
+using CEGES_MVC.Interfaces;
+using CEGES_MVC.Implementation;
 using Microsoft.Extensions.Options;
 using CEGES_MVC.ModelBinders;
 

@@ -1,12 +1,12 @@
 ﻿using CEGES_Models;
-using CEGES_Services.ViewModels.EquipementVMs;
+using CEGES_MVC.ViewModels.EquipementVMs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CEGES_Services.ViewModels.GroupeVMs
+namespace CEGES_MVC.ViewModels.GroupeVMs
 {
     public class GroupeDetailsVM
     {

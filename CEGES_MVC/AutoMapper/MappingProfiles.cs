@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using CEGES_Models;
-using CEGES_Services.ViewModels.EntrepriseVM;
-using CEGES_Services.ViewModels.EquipementVMs;
-using CEGES_Services.ViewModels.GroupeVMs;
+using CEGES_MVC.ViewModels.EntrepriseVM;
+using CEGES_MVC.ViewModels.EquipementVMs;
+using CEGES_MVC.ViewModels.GroupeVMs;
 using System.Linq;
 using System.Net;
 

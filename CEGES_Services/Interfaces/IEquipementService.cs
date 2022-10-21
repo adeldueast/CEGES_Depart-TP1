@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CEGES_Services.Interfaces
+namespace CEGES_MVC.Interfaces
 {
     public interface IEquipementService
     {

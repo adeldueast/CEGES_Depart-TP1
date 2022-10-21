@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CEGES_Services.ViewModels.EntrepriseVM
+namespace CEGES_MVC.ViewModels.EntrepriseVM
 {
     public class EntrepriseSummaryVM
     {

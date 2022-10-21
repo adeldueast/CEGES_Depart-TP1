@@ -1,6 +1,6 @@
 ﻿using CEGES_Models;
 
-namespace CEGES_Services.Interfaces
+namespace CEGES_MVC.Interfaces
 {
     public interface IGroupeService
     {

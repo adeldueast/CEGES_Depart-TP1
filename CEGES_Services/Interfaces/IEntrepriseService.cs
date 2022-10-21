@@ -1,12 +1,6 @@
 ﻿using CEGES_Models;
-using CEGES_Services.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CEGES_Services.Interfaces
+namespace CEGES_MVC.Interfaces
 {
     public interface IEntrepriseService
     {

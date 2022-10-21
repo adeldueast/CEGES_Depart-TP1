@@ -1,6 +1,4 @@
-﻿
-
-namespace CEGES.Models
+﻿namespace CEGES_MVC.Models
 {
     public class VM_Vide
     {

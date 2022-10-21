@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
-using CEGES.Models;
 using CEGES_Models;
 using CEGES_Models.Enums;
-using CEGES_Services.Interfaces;
-using CEGES_Services.ViewModels.EquipementVMs;
+using CEGES_MVC.Interfaces;
+using CEGES_MVC.ViewModels.EquipementVMs;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 

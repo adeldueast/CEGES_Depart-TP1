@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using CEGES.Models;
+﻿
 using CEGES_Models;
-using CEGES_Services.Interfaces;
-using CEGES_Services.ViewModels;
-using CEGES_Services.ViewModels.EntrepriseVM;
-using CEGES_Services.ViewModels.GroupeVMs;
+using CEGES_MVC.Interfaces;
+using CEGES_MVC.ViewModels.EntrepriseVM;
+using CEGES_MVC.ViewModels.GroupeVMs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -19,31 +17,23 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
     {
 
         private readonly IEntrepriseService _entrepriseService;
-        private readonly IMapper _mapper;
-        public EntrepriseController(IEntrepriseService entrepriseService, IMapper mapper)
-        {
-            this._mapper = mapper;
-            this._entrepriseService = entrepriseService;
-        }
+
+        public EntrepriseController(IEntrepriseService entrepriseService) => this._entrepriseService = entrepriseService;
+
         public async Task<IActionResult> Index()
         {
             var entreprises = await _entrepriseService.GetAll();
 
             //TODO: map dm to vm
+            var vm = entreprises.Select(x => new EntrepriseSummaryVM
+            {
+                Id = x.Id,
+                Nom = x.Nom,
+                GroupesCount = x.Groupes.Count,
+                EquipementsCount = x.Groupes.SelectMany(x => x.Equipements).Count()
 
-            //Methode manuelle (1) 
-            //var vm = entreprises.Select(x => new EntrepriseSummaryVM
-            //{
-            //    Id = x.Id,
-            //    Nom = x.Nom,
-            //    GroupesCount = x.Groupes.Count,
-            //    EquipementsCount = x.Groupes.SelectMany(x => x.Equipements).Count()
+            }).ToList();
 
-            //}).ToList();
-
-            //Methode AutoMapper (2) 
-            var vm = _mapper.Map<IEnumerable<Entreprise>, IEnumerable<EntrepriseSummaryVM>>(entreprises);
-           
             return View(vm);
         }
 
@@ -53,23 +43,20 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
             var entreprise = await _entrepriseService.GetById(id);
 
 
-            //Mapping process
+            var vm = new EntrepriseDetailsVM()
+            {
+                Id = entreprise.Id,
+                Nom = entreprise.Nom,
+                Groupes = entreprise.Groupes.Select(g => new GroupeSummaryVM
+                {
+                    Id = g.Id,
+                    Nom = g.Nom,
+                    EquipementCount = g.Equipements.Count
 
-            //var vm = new EntrepriseDetailsVM()
-            //{
-            //    Id = entreprise.Id,
-            //    Nom = entreprise.Nom,
-            //    Groupes = entreprise.Groupes.Select(g => new GroupeSummaryVM
-            //    {
-            //        Id = g.Id,
-            //        Nom = g.Nom,
-            //        EquipementCount = g.Equipements.Count
-
-            //    }).ToList()
-            //};
+                }).ToList()
+            };
 
 
-            var vm = _mapper.Map<EntrepriseDetailsVM>(entreprise);
 
             return View(vm);
         }

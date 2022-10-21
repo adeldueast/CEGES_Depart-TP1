@@ -1,14 +1,14 @@
 ﻿using CEGES_DataAccess.Repository.IRepository;
 using CEGES_Models;
 using CEGES_Models.Exceptions;
-using CEGES_Services.Interfaces;
+using CEGES_MVC.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CEGES_Services.Implementation
+namespace CEGES_MVC.Implementation
 {
     public class EquipementService : IEquipementService
     {

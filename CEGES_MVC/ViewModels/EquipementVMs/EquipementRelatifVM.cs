@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CEGES_Services.ViewModels.EquipementVMs
+namespace CEGES_MVC.ViewModels.EquipementVMs
 {
     public class EquipementRelatifVM : EquipementVM
     {

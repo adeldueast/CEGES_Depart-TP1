@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using CEGES.Models;
-using CEGES_Services.Interfaces;
-using CEGES_Services.ViewModels.GroupeVMs;
+using CEGES_MVC.Interfaces;
+using CEGES_MVC.ViewModels.GroupeVMs;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
