@@ -33,20 +33,20 @@
             case EquipementConstantVM c:
                 <div class="row no-gutters">
                     <div class="col-md-7 text-right">
-                        Émissions&nbsp;:&nbsp;
+                        @Html.DisplayNameFor(m=>c.Quantite)&nbsp;:&nbsp;
                     </div>
                     <div class="col-md-5 text-left">
-                        @c.Quantite t/j
+                        @Html.DisplayFor(m=>@c.Quantite) t/j
                     </div>
                 </div>
                 break;
             case EquipementLineaireVM l:
                 <div class="row no-gutters">
                     <div class="col-md-7 text-right">
-                        Facteur de conversion&nbsp;:&nbsp;
+                        @Html.DisplayNameFor(m=>l.FacteurConversion)&nbsp;:&nbsp;
                     </div>
                     <div class="col-md-5 text-left">
-                        @l.FacteurConversion/@l.UniteMesure
+                        @Html.DisplayFor(m=>@l.FacteurConversion)/@Html.DisplayFor(m=>@l.UniteMesure)
                     </div>
                 </div>
                 break;
