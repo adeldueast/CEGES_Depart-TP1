@@ -12,8 +12,8 @@ namespace CEGES_DataAccess.Repository.IRepository
     {
         void Update(Entreprise entreprise);
 
-        Task<List<Entreprise>> GetAllIncludeGroupesAndEquipements();
+        Task<List<Entreprise>> GetAllWithGroupesWithEquipements();
 
-        Task<Entreprise> GetByIdIncludeGroupesAndEquipements(int id);
+        Task<Entreprise> GetByIdWithGroupesWithEquipements(int id);
     }
 }

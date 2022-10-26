@@ -13,12 +13,12 @@ namespace CEGES_MVC.Implementation
 
         public EntrepriseService(IUnitOfWork uow) => _uow = uow;
 
-        public async Task<IEnumerable<Entreprise>> GetAll() => await _uow.Entreprises.GetAllIncludeGroupesAndEquipements();
+        public async Task<IEnumerable<Entreprise>> GetAll() => await _uow.Entreprises.GetAllWithGroupesWithEquipements();
 
         public async Task<Entreprise> GetById(int id)
         {
 
-            var entreprise = await _uow.Entreprises.GetByIdIncludeGroupesAndEquipements(id);
+            var entreprise = await _uow.Entreprises.GetByIdWithGroupesWithEquipements(id);
 
             if (entreprise == null)
             {
@@ -51,7 +51,7 @@ namespace CEGES_MVC.Implementation
 
             entreprise.Nom = nom;
 
-            _uow.Entreprises.Update(entreprise);
+            //_uow.Entreprises.Update(entreprise);
 
             await _uow.SaveChangesAsync();
 

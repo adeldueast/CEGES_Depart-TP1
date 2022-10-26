@@ -9,7 +9,7 @@ namespace CEGES_DataAccess.Repository.IRepository
 {
     public  interface IGroupRepository : IRepository<Groupe>
     {
-        Task<Groupe> GetByIdIncludeEntrepriseAndEquipements(int id); 
+        Task<Groupe> GetByIdWithEntrepriseWithEquipements(int id); 
         void Update(Groupe groupe);
     }
 }

@@ -19,7 +19,7 @@ namespace CEGES_DataAccess.Repository
             _db = db;
         }
 
-        public async Task<Groupe> GetByIdIncludeEntrepriseAndEquipements(int id)
+        public async Task<Groupe> GetByIdWithEntrepriseWithEquipements(int id)
         {
             return await _db.Groupes.Include(g => g.Equipements).Include(g=>g.Entreprise).SingleOrDefaultAsync(g => g.Id == id);
         }
