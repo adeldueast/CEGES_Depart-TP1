@@ -13,6 +13,8 @@ using CEGES_MVC.Interfaces;
 using CEGES_MVC.Implementation;
 using Microsoft.Extensions.Options;
 using CEGES_MVC.ModelBinders;
+using CEGES_Services.Interfaces;
+using CEGES_Services.Implementation;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +32,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEntrepriseService, EntrepriseService>();
 builder.Services.AddScoped<IGroupeService, GroupService>();
 builder.Services.AddScoped<IEquipementService, EquipementService>();
+builder.Services.AddScoped<IRapportService, RapportService>();
+
 
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
