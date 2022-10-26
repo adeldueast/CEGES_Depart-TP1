@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CEGES_DataAccess.Repository.IRepository
 {
-    public  interface IRapportRepository : IRepository<Rapport>
+    public interface IRapportRepository : IRepository<Rapport>
     {
         void Update(Rapport rapport);
     }
