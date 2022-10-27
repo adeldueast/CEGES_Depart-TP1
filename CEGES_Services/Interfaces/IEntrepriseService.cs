@@ -7,6 +7,7 @@ namespace CEGES_MVC.Interfaces
 
         Task<IEnumerable<Entreprise>> GetAll();
 
+        Task<object> GetAllWithPeriods();
 
         Task<Entreprise> GetById(int id);
 

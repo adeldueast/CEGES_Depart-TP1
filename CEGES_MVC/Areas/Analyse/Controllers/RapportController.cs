@@ -31,6 +31,7 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
 
         public IActionResult Index()
         {
+            var entreprisesVM = await _entrepriseService.GetAllWithPeriods();
             return View();
         }
 
@@ -41,31 +42,25 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
 
 
             //get tout les rapports de l'entreprise...
-            //var rapports = await _uow.Rapports.GetAllAsync();//r => r.EntrepriseId == entreprise.Id
-
-
-            IEnumerable<Rapport> rapports = new List<Rapport>
+            var rapports = await _uow.Rapports.GetAllAsync();//r => r.EntrepriseId == entreprise.Id
+            IEnumerable<Rapport> fakeRapports = new List<Rapport>
             {
                 new Rapport
                 {
                     Id = 1,
-                    EntrepriseId = 1,
                     DateDebut = new DateTime(2020,11,1)
                 },
 
                  new Rapport
                 {
                     Id = 2,
-                    EntrepriseId = 1,
                     DateDebut = new DateTime(2022,10,1)
                 },
             };
 
-            var rapports_queue = new Queue<Rapport>(rapports);
-
             var startDate = new DateTime(2020, 11, 1);
             var endDate = new DateTime(2022, 10, 1);
-            var datesGroupedByYear = GenerateMonthsBetween(startDate, endDate, rapports_queue);
+            var datesGroupedByYear = GenerateMonthsBetween(startDate, endDate, new Queue<Rapport>(rapports));
 
 
             return View(datesGroupedByYear);
@@ -116,8 +111,6 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
         {
 
             ICollection<(DateTime, int?)> dates = new List<(DateTime, int?)>();
-
-
 
             while (from <= end)
             {

@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace CEGES_DataAccess.Repository.IRepository
 {
-    
+
     public interface IEntrepriseRepository : IRepository<Entreprise>
     {
         void Update(Entreprise entreprise);
+
+        Task<object> GetAllWithPeriods();
 
         Task<List<Entreprise>> GetAllWithGroupesWithEquipements();
 

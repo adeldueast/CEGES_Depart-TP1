@@ -22,6 +22,21 @@ namespace CEGES_DataAccess.Repository
         public async Task<List<Entreprise>> GetAllWithGroupesWithEquipements()
         {
             return await _db.Entreprises.Include(e => e.Groupes).ThenInclude(g => g.Equipements).ToListAsync();
+        }
+
+        public async Task<object> GetAllWithPeriods()
+        {
+
+            var entrepriseWithRapports = await _db.Entreprises.Select(e => new
+            {
+                Entreprise = e,
+                RapportsCount = e.Groupes.SelectMany(g => g.Equipements).SelectMany(e => e.Rapports).ToList().Count
+
+            }).ToListAsync();
+
+            //var rapportEntreprise = _db.Rapports.Select(r => new { Rapport = r, Entreprise = r.Equipements.Select(y => y.Groupe.Entreprise).ToList() }).ToList();
+
+            return entrepriseWithRapports;
 
         }
 

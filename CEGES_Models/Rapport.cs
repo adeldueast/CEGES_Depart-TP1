@@ -18,9 +18,9 @@ namespace CEGES_Models
 
         public List<Equipement> Equipements { get; set; }
 
-        [NotMapped]
-        [Required]
-        public int EntrepriseId { get; set; } 
+        //[NotMapped]
+        //[Required]
+        //public int EntrepriseId { get; set; } 
 
       
     }

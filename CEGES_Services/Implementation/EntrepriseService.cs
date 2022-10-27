@@ -3,8 +3,6 @@ using CEGES_Models;
 using CEGES_Models.Exceptions;
 using CEGES_MVC.Interfaces;
 
-
-
 namespace CEGES_MVC.Implementation
 {
     public class EntrepriseService : IEntrepriseService
@@ -58,6 +56,11 @@ namespace CEGES_MVC.Implementation
             return entreprise.Id;
         }
 
+        public async Task<object> GetAllWithPeriods()
+        {
+            var a = await _uow.Entreprises.GetAllWithPeriods();
 
+            return a;
+        }
     }
 }
