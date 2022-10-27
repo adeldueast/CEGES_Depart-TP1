@@ -18,7 +18,6 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
     {
         private readonly IRapportService _rapportService;
         private readonly IEntrepriseService _entrepriseService;
-
         private readonly IUnitOfWork _uow;
 
 
@@ -29,20 +28,21 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
             _entrepriseService = entrepriseService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
-            var entreprisesVM = await _entrepriseService.GetAllWithPeriods();
+            var entreprisesVM = await _uow.Entreprises.GetAllWithPeriodsCount();
             return View();
         }
 
         public async Task<IActionResult> Liste(int id)
         {
-            //check if entreprise existe
+            //check if entreprise existe.. a revoir
             var entreprise = await _entrepriseService.GetById(id);
 
 
+
             //get tout les rapports de l'entreprise...
-            var rapports = await _uow.Rapports.GetAllAsync();//r => r.EntrepriseId == entreprise.Id
+            var rapports = await _uow.Entreprises.GetByIdWithPeriods(id);
             IEnumerable<Rapport> fakeRapports = new List<Rapport>
             {
                 new Rapport
@@ -60,7 +60,7 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
 
             var startDate = new DateTime(2020, 11, 1);
             var endDate = new DateTime(2022, 10, 1);
-            var datesGroupedByYear = GenerateMonthsBetween(startDate, endDate, new Queue<Rapport>(rapports));
+            var datesGroupedByYear = GenerateMonthsBetween(startDate, endDate, new Queue<Rapport>(fakeRapports));
 
 
             return View(datesGroupedByYear);
@@ -103,14 +103,14 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
             }
             else
             {
-                return View(nameof(Index));
+                return View(nameof(IndexAsync));
             }
         }
 
-        public IEnumerable<IGrouping<string, (DateTime, int?)>> GenerateMonthsBetween(DateTime from, DateTime end, Queue<Rapport> rapports)
+        public IEnumerable<IGrouping<string, (DateTime, (int, int)?)>> GenerateMonthsBetween(DateTime from, DateTime end, Queue<Rapport> rapports)
         {
 
-            ICollection<(DateTime, int?)> dates = new List<(DateTime, int?)>();
+            ICollection<(DateTime, (int, int)?)> dates = new List<(DateTime, (int, int)?)>();
 
             while (from <= end)
             {
@@ -119,7 +119,7 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
 
                 if (rapport != null && rapport.DateDebut.Year == from.Year && rapport.DateDebut.Month == from.Month)
                 {
-                    dates.Add((from, rapport.Id));
+                    //dates.Add((from, (rapport.Id,rapport));
                     rapports.Dequeue();
                 }
                 else

@@ -58,7 +58,7 @@ namespace CEGES_MVC.Implementation
 
         public async Task<object> GetAllWithPeriods()
         {
-            var a = await _uow.Entreprises.GetAllWithPeriods();
+            var a = await _uow.Entreprises.GetAllWithPeriodsCount();
 
             return a;
         }

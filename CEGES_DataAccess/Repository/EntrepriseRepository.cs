@@ -24,10 +24,26 @@ namespace CEGES_DataAccess.Repository
             return await _db.Entreprises.Include(e => e.Groupes).ThenInclude(g => g.Equipements).ToListAsync();
         }
 
-        public async Task<object> GetAllWithPeriods()
+        public async Task<object> GetByIdWithPeriods(int id)
         {
 
-            var entrepriseWithRapports = await _db.Entreprises.Select(e => new
+            var entrepriseWithRapports = await _db.Entreprises.Where(e => e.Id == id)
+                .Select(e => new
+                {
+                    Entreprise = e,
+                    Rapports = e.Groupes.SelectMany(g => g.Equipements).SelectMany(e => e.Rapports).ToList()
+
+                }).ToListAsync();
+
+            //var rapportEntreprise = _db.Rapports.Select(r => new { Rapport = r, Entreprise = r.Equipements.Select(y => y.Groupe.Entreprise).ToList() }).ToList();
+
+            return entrepriseWithRapports;
+        }
+
+        public async Task<object> GetAllWithPeriodsCount()
+        {
+
+            var entrepriseWithRapportsCount = await _db.Entreprises.Select(e => new
             {
                 Entreprise = e,
                 RapportsCount = e.Groupes.SelectMany(g => g.Equipements).SelectMany(e => e.Rapports).ToList().Count
@@ -36,7 +52,7 @@ namespace CEGES_DataAccess.Repository
 
             //var rapportEntreprise = _db.Rapports.Select(r => new { Rapport = r, Entreprise = r.Equipements.Select(y => y.Groupe.Entreprise).ToList() }).ToList();
 
-            return entrepriseWithRapports;
+            return entrepriseWithRapportsCount;
 
         }
 

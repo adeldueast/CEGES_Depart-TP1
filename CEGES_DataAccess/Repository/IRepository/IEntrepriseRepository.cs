@@ -12,10 +12,17 @@ namespace CEGES_DataAccess.Repository.IRepository
     {
         void Update(Entreprise entreprise);
 
-        Task<object> GetAllWithPeriods();
+        Task<object> GetByIdWithPeriods(int id);
+
+        Task<object> GetAllWithPeriodsCount();
+
+
 
         Task<List<Entreprise>> GetAllWithGroupesWithEquipements();
 
         Task<Entreprise> GetByIdWithGroupesWithEquipements(int id);
+
+
+
     }
 }
