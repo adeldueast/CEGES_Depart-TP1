@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using CEGES_Models;
 
 namespace CEGES_MVC.Areas.Analyse.Controllers
 {
@@ -19,7 +21,7 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
 
         private readonly IUnitOfWork _uow;
 
-        
+
         public RapportController(IRapportService rapportService, IUnitOfWork uow, IEntrepriseService entrepriseService)
         {
             _uow = uow;
@@ -39,28 +41,34 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
 
 
             //get tout les rapports de l'entreprise...
-            var rapports = await _uow.Rapports.GetAllAsync();//r => r.EntrepriseId == entreprise.Id
+            //var rapports = await _uow.Rapports.GetAllAsync();//r => r.EntrepriseId == entreprise.Id
 
-            var vm = rapports.Select(r => new
+
+            IEnumerable<Rapport> rapports = new List<Rapport>
             {
-                Id = r.Id,
-                DateDebut = r.DateDebut
-                //EntrepriseId = entreprise.Id
-            });;
+                new Rapport
+                {
+                    Id = 1,
+                    EntrepriseId = 1,
+                    DateDebut = new DateTime(2020,11,1)
+                },
+
+                 new Rapport
+                {
+                    Id = 2,
+                    EntrepriseId = 1,
+                    DateDebut = new DateTime(2022,10,1)
+                },
+            };
+
+            var rapports_queue = new Queue<Rapport>(rapports);
 
             var startDate = new DateTime(2020, 11, 1);
             var endDate = new DateTime(2022, 10, 1);
-            var months = GenerateMonthsBetween(startDate, endDate);
-
-            foreach (var rapport in vm)
-            {
-                months[rapport.DateDebut.Date] = rapport.Id;
-            }
+            var datesGroupedByYear = GenerateMonthsBetween(startDate, endDate, rapports_queue);
 
 
-            var a = months.GroupBy(m => m.Key.Date.Year);
-
-            return View(months.GroupBy(m => m.Key.Date.Year));
+            return View(datesGroupedByYear);
         }
 
         public async Task<IActionResult> Insert(int entrepriseId, DateTime RapportDebut)
@@ -104,19 +112,34 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
             }
         }
 
-        public IDictionary<DateTime, int?> GenerateMonthsBetween(DateTime from, DateTime end)
+        public IEnumerable<IGrouping<string, (DateTime, int?)>> GenerateMonthsBetween(DateTime from, DateTime end, Queue<Rapport> rapports)
         {
-            IDictionary<DateTime, int?> dates = new Dictionary<DateTime, int?>() { { from, null } };
+
+            ICollection<(DateTime, int?)> dates = new List<(DateTime, int?)>();
+
+
 
             while (from <= end)
             {
+
+                rapports.TryPeek(out var rapport);
+
+                if (rapport != null && rapport.DateDebut.Year == from.Year && rapport.DateDebut.Month == from.Month)
+                {
+                    dates.Add((from, rapport.Id));
+                    rapports.Dequeue();
+                }
+                else
+                {
+                    dates.Add((from, null));
+                }
+
+
                 // pull out month and year
                 from = from.AddMonths(1);
-
-                dates.Add(from, null);
             };
 
-            return dates;
+            return dates.ToLookup(date => date.Item1.Year.ToString());
         }
     }
 }
