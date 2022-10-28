@@ -12,17 +12,16 @@ namespace CEGES_DataAccess.Repository.IRepository
     {
         void Update(Entreprise entreprise);
 
-        Task<object> GetByIdWithPeriods(int id);
-
-        Task<object> GetAllWithPeriodsCount();
-
-
-
         Task<List<Entreprise>> GetAllWithGroupesWithEquipements();
 
         Task<Entreprise> GetByIdWithGroupesWithEquipements(int id);
 
+        //These next queries are the new SPECIAL queries
+        //Special in the sens that they dont just return a domain entity, like others
+        //but return a custom result using .Select 
+        Task<IEnumerable<EntrepriseRapports>> GetByIdWithPeriods(int id);
 
+        Task<IEnumerable<EntrepriseRapportsCount>> GetAllWithPeriodsCount();
 
     }
 }

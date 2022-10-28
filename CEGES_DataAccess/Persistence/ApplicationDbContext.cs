@@ -17,7 +17,7 @@ namespace CEGES_DataAccess.Persistence
         public DbSet<Entreprise> Entreprises { get; set; }
         public DbSet<Groupe> Groupes { get; set; }
         public DbSet<Rapport> Rapports { get; set; }
-       
+
 
         //Ce n'est pas nécessaire d'utiliser les db sets suivants (pour l'instant).
         //Pour l'instant, le repo pattern utilise Equipements (classe générique abstraite) pour add/delete,
@@ -32,6 +32,9 @@ namespace CEGES_DataAccess.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<EquipementRapport>()
+                .HasKey(er => new { er.EquipementId, er.RapportId });
+
             //Microsoft TPH doc: https://learn.microsoft.com/en-us/ef/core/modeling/inheritance#table-per-hierarchy-and-discriminator-configuration
             //LearnEntityFrameworkCore doc: https://www.learnentityframeworkcore.com/inheritance/table-per-hierarchy
             modelBuilder.Entity<Equipement>()

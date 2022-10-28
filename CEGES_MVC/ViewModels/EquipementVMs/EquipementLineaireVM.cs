@@ -16,6 +16,7 @@ namespace CEGES_MVC.ViewModels.EquipementVMs
         [DisplayName("Facteur de conversion")]
         public int FacteurConversion { get; set; }
 
+        public int Mesure { get; set; }
 
         public EquipementLineaireVM() : base(EquipementTypes.Lineaire,EquipementDescriptions.Lineaire)
         {

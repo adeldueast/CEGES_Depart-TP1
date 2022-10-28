@@ -20,10 +20,12 @@ namespace CEGES_Models
 
         public Groupe Groupe { get; set; }
 
-        public List<Rapport> Rapports { get; set; }
+        public List<EquipementRapport> Rapports { get; set; }
 
         [NotMapped]
         public abstract string Description { get; }
+
+
     }
 
 }

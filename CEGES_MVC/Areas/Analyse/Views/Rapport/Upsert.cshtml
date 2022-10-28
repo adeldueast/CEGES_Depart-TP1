@@ -1,113 +1,117 @@
-﻿@using CEGES_MVC.Models
-@model VM_Vide
+﻿@using CEGES_MVC.ViewModels.EntrepriseVMs
+@using CEGES_MVC.ViewModels.EquipementVMs
+@using CEGES_Util
+@model EntrepriseInsertPeriod
 @{
     ViewData["Title"] = "Février 2022";
+    var date = DateTime.Parse(Context.Request.Query["RapportDebut"]);
 }
 
 <h3>
-    Janvier 2022
-    <small class="text-muted">(Entreprise Exemple)</small>
+    @*date.Item1.ToMonthName().CapitalizeFirst()} {date.Item1.Year}*@
+    @($"{date.ToMonthName().CapitalizeFirst()} {date.Year}")
+
+    <small class="text-muted">(@Model.Nom)</small>
 </h3>
 
 <form asp-action="Upsert" method="post" enctype="multipart/form-data">
-    <div class="list-group list-group-flush">
-        <div class="list-group-item active mt-3">
-            Groupe exemple
-        </div>
-        <div class="list-group-item">
-            <div class="row">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-6 font-weight-bold">
-                            Nom de l'équipement
+
+    @foreach (var groupe in Model.Groupes)
+    {
+        <div class="list-group list-group-flush">
+            <div class="list-group-item active mt-3">
+                @groupe.Nom
+            </div>
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-6 font-weight-bold">
+                                Nom de l'équipement
+                            </div>
+                            <div class="col-6">
+                                Type de l'équipement
+                            </div>
                         </div>
+                        <div class="row">
+                            <div class="col-12">
+                                Formule
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        Mesure
+                    </div>
+                    <div class="col-3">
+                        Émissions mensuelles
+                    </div>
+                </div>
+            </div>
+            @foreach (var equipement in groupe.Equipements)
+            {
+                <div class="list-group-item">
+                    <div class="row">
                         <div class="col-6">
-                            Type de l'équipement
+                            <div class="row">
+                                <div class="col-6 font-weight-bold">
+                                    @equipement.Nom
+                                </div>
+                                <div class="col-6">
+                                    @equipement.Type
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    @*10 t/j (calcul i think??)*@
+                                    @switch (equipement)
+                                    {
+                                        case EquipementConstantVM c:
+                                            @Html.DisplayFor(m=>c.Quantite) @Html.Raw(" t / j x 30 j")
+                                            break;
+                                        case EquipementLineaireVM l:
+                                            @*TODO: A REVOIR*@
+                                            @Html.Raw($"{l.FacteurConversion} t / {l.UniteMesure} x 0 {l.UniteMesure}")
+
+                                            break;
+                                        case EquipementRelatifVM r:
+                                            @*0 % de[1, 57 à 12, 8] t / j × 31 j*@
+
+                                            @Html.Raw($"0% de [{r.IntensiteZero} à {r.IntensiteZero}] t / j x 30 j")
+
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            Formule
+                        <div class="col-3">
+                            @switch (equipement)
+                            {
+                                case EquipementConstantVM c:
+                                    Html.Raw("&nbsp;");
+                                    break;
+                                case EquipementLineaireVM l:
+                                    <input asp-for="@l.Mesure" type="text" />
+                                    @Html.DisplayFor(m=>l.UniteMesure)
+                                    break;
+                                case EquipementRelatifVM r:
+                                    <input asp-for="@r.Mesure" type="text" />
+                                    @Html.Raw("%")
+                                    break;
+                                default:
+                                    break;
+                            }
+
                         </div>
+                        <div class="col-3">&nbsp;</div>
                     </div>
                 </div>
-                <div class="col-3">
-                    Mesure
-                </div>
-                <div class="col-3">
-                    Émissions mensuelles
-                </div>
-            </div>
+            }
+
         </div>
-        <div class="list-group-item">
-            <div class="row">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-6 font-weight-bold">
-                            Équipement exemple 1
-                        </div>
-                        <div class="col-6">
-                            Constant
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            10 t/j
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    &nbsp;
-                </div>
-                <div class="col-3">&nbsp;</div>
-            </div>
-        </div>
-        <div class="list-group-item">
-            <div class="row">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-6 font-weight-bold">
-                            Équipement exemple 2
-                        </div>
-                        <div class="col-6">Linéaire
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            0.000567 t / pizza × 1476 pizza
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <input type="text" /> pizza
-                </div>
-                <div class="col-3">&nbsp;</div>
-            </div>
-        </div>
-        <div class="list-group-item">
-            <div class="row">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-6 font-weight-bold">
-                            Équipement exemple 3
-                        </div>
-                        <div class="col-6">
-                            Relatif
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            89% de [0.120 à 0.374] t / j × 31 j
-                        </div>
-                    </div>
-                </div>
-                <div class="col-3">
-                    <input type="text" /> %
-                </div>
-                <div class="col-3">&nbsp;</div>
-            </div>
-        </div>
-    </div>
+    }
+
 
     <div class="form-group row mt-3">
         <div class="col-4 offset-4">

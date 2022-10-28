@@ -24,35 +24,40 @@ namespace CEGES_DataAccess.Repository
             return await _db.Entreprises.Include(e => e.Groupes).ThenInclude(g => g.Equipements).ToListAsync();
         }
 
-        public async Task<object> GetByIdWithPeriods(int id)
+        public async Task<IEnumerable<EntrepriseRapports>> GetByIdWithPeriods(int id)
         {
 
-            var entrepriseWithRapports = await _db.Entreprises.Where(e => e.Id == id)
-                .Select(e => new
+            var entrepriseWithRapports = await _db.Entreprises
+                .Where(e => e.Id == id)
+                .Select(e => new EntrepriseRapports
                 {
                     Entreprise = e,
-                    Rapports = e.Groupes.SelectMany(g => g.Equipements).SelectMany(e => e.Rapports).ToList()
+                    Rapports = e.Groupes
+                    .SelectMany(g => g.Equipements)
+                    .SelectMany(e => e.Rapports)
+                    .Select(r => r.Rapport)
+                    .Distinct()
+                    .OrderBy(r => r.DateDebut)
+                    .ToList()
 
                 }).ToListAsync();
-
-            //var rapportEntreprise = _db.Rapports.Select(r => new { Rapport = r, Entreprise = r.Equipements.Select(y => y.Groupe.Entreprise).ToList() }).ToList();
 
             return entrepriseWithRapports;
         }
 
-        public async Task<object> GetAllWithPeriodsCount()
+        public async Task<IEnumerable<EntrepriseRapportsCount>> GetAllWithPeriodsCount()
         {
 
-            var entrepriseWithRapportsCount = await _db.Entreprises.Select(e => new
-            {
-                Entreprise = e,
-                RapportsCount = e.Groupes.SelectMany(g => g.Equipements).SelectMany(e => e.Rapports).ToList().Count
+            var entrepriseWithRapportsCount = await _db.Entreprises
+                .Select(e => new EntrepriseRapportsCount
+                {
+                    Entreprise = e,
+                    RapportsCount = e.Groupes.SelectMany(g => g.Equipements).SelectMany(e => e.Rapports).Count()
 
-            }).ToListAsync();
+                }).ToListAsync();
 
-            //var rapportEntreprise = _db.Rapports.Select(r => new { Rapport = r, Entreprise = r.Equipements.Select(y => y.Groupe.Entreprise).ToList() }).ToList();
 
-            return entrepriseWithRapportsCount;
+            return entrepriseWithRapportsCount.ToList();
 
         }
 

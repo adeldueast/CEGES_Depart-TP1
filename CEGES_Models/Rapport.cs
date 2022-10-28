@@ -16,11 +16,7 @@ namespace CEGES_Models
 
         public DateTime DateFin { get; set; }
 
-        public List<Equipement> Equipements { get; set; }
-
-        //[NotMapped]
-        //[Required]
-        //public int EntrepriseId { get; set; } 
+        public List<EquipementRapport> Equipements { get; set; }
 
       
     }

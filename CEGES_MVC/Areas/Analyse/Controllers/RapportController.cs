@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CEGES_Models;
+using AutoMapper;
+using CEGES_MVC.ViewModels.EntrepriseVMs;
 
 namespace CEGES_MVC.Areas.Analyse.Controllers
 {
@@ -19,16 +21,18 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
         private readonly IRapportService _rapportService;
         private readonly IEntrepriseService _entrepriseService;
         private readonly IUnitOfWork _uow;
+        private readonly IMapper _mapper;
 
 
-        public RapportController(IRapportService rapportService, IUnitOfWork uow, IEntrepriseService entrepriseService)
+        public RapportController(IRapportService rapportService, IUnitOfWork uow, IEntrepriseService entrepriseService, IMapper mapper)
         {
             _uow = uow;
             _rapportService = rapportService;
             _entrepriseService = entrepriseService;
+            _mapper = mapper;
         }
 
-        public async Task<IActionResult> IndexAsync()
+        public async Task<IActionResult> Index()
         {
             var entreprisesVM = await _uow.Entreprises.GetAllWithPeriodsCount();
             return View();
@@ -37,39 +41,48 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
         public async Task<IActionResult> Liste(int id)
         {
             //check if entreprise existe.. a revoir
-            var entreprise = await _entrepriseService.GetById(id);
+            //var entreprise = await _entrepriseService.GetById(id);
 
 
 
             //get tout les rapports de l'entreprise...
-            var rapports = await _uow.Entreprises.GetByIdWithPeriods(id);
-            IEnumerable<Rapport> fakeRapports = new List<Rapport>
-            {
-                new Rapport
-                {
-                    Id = 1,
-                    DateDebut = new DateTime(2020,11,1)
-                },
+            var entrepriseRapports = await _uow.Entreprises.GetByIdWithPeriods(id);
 
-                 new Rapport
+            var fakeEntrepriseRapports = new EntrepriseRapports
+            {
+                Entreprise = new() { Id = 1 },
+                Rapports = new List<Rapport>()
                 {
-                    Id = 2,
-                    DateDebut = new DateTime(2022,10,1)
-                },
+                    new Rapport
+                    {
+                        Id = 4,
+                        DateDebut = new DateTime(2020,11,1)
+                    }, new Rapport
+                    {
+                        Id = 2,
+                        DateDebut = new DateTime(2022,10,1)
+                    }
+                }
             };
 
             var startDate = new DateTime(2020, 11, 1);
             var endDate = new DateTime(2022, 10, 1);
-            var datesGroupedByYear = GenerateMonthsBetween(startDate, endDate, new Queue<Rapport>(fakeRapports));
-
+            var datesGroupedByYear = GenerateMonthsBetween(startDate, endDate, fakeEntrepriseRapports.Rapports);
+            ViewData["entrepriseId"] = fakeEntrepriseRapports.Entreprise.Id;
 
             return View(datesGroupedByYear);
         }
 
         public async Task<IActionResult> Insert(int entrepriseId, DateTime RapportDebut)
         {
-            await Task.CompletedTask;
-            VM_Vide vm = new VM_Vide();
+
+            //Fetch all groups inluding their equipement
+
+            var entrepriseGroupesAndEquipements = await _entrepriseService.GetById(entrepriseId);
+
+            //map domain to vm
+            var vm = _mapper.Map<EntrepriseInsertPeriod>(entrepriseGroupesAndEquipements);
+
             return View("Upsert", vm);
         }
 
@@ -90,7 +103,7 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upsert(VM_Vide vm)
+        public async Task<IActionResult> Upsert(EntrepriseInsertPeriod vm)
         {
             await Task.CompletedTask;
             if (ModelState.IsValid)
@@ -103,24 +116,24 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
             }
             else
             {
-                return View(nameof(IndexAsync));
+                return View(nameof(Index));
             }
         }
 
-        public IEnumerable<IGrouping<string, (DateTime, (int, int)?)>> GenerateMonthsBetween(DateTime from, DateTime end, Queue<Rapport> rapports)
+        public ILookup<string, (DateTime, int?)> GenerateMonthsBetween(DateTime from, DateTime end, IEnumerable<Rapport> rapports)
         {
 
-            ICollection<(DateTime, (int, int)?)> dates = new List<(DateTime, (int, int)?)>();
-
+            ICollection<(DateTime, int?)> dates = new List<(DateTime, int?)>();
+            Queue<Rapport> _rapports = new Queue<Rapport>(rapports);
             while (from <= end)
             {
 
-                rapports.TryPeek(out var rapport);
+                _rapports.TryPeek(out var rapport);
 
                 if (rapport != null && rapport.DateDebut.Year == from.Year && rapport.DateDebut.Month == from.Month)
                 {
-                    //dates.Add((from, (rapport.Id,rapport));
-                    rapports.Dequeue();
+                    dates.Add((from, rapport.Id));
+                    _rapports.Dequeue();
                 }
                 else
                 {
