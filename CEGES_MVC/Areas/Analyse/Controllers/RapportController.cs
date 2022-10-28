@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using CEGES_Models;
 using AutoMapper;
 using CEGES_MVC.ViewModels.EntrepriseVMs;
+using CEGES_DataAccess.Persistence;
 
 namespace CEGES_MVC.Areas.Analyse.Controllers
 {
@@ -22,27 +23,25 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
         private readonly IEntrepriseService _entrepriseService;
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _context;
 
-
-        public RapportController(IRapportService rapportService, IUnitOfWork uow, IEntrepriseService entrepriseService, IMapper mapper)
+        public RapportController(IRapportService rapportService, IUnitOfWork uow, IEntrepriseService entrepriseService, IMapper mapper, ApplicationDbContext context)
         {
             _uow = uow;
             _rapportService = rapportService;
             _entrepriseService = entrepriseService;
             _mapper = mapper;
+            _context = context;
         }
 
         public async Task<IActionResult> Index()
         {
-            var entreprisesVM = await _uow.Entreprises.GetAllWithPeriodsCount();
+            var entrepriseRapportsCountVM = await _uow.Entreprises.GetAllWithPeriodsCount();
             return View();
         }
 
         public async Task<IActionResult> Liste(int id)
         {
-            //check if entreprise existe.. a revoir
-            //var entreprise = await _entrepriseService.GetById(id);
-
 
 
             //get tout les rapports de l'entreprise...
@@ -67,7 +66,9 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
 
             var startDate = new DateTime(2020, 11, 1);
             var endDate = new DateTime(2022, 10, 1);
+
             var datesGroupedByYear = GenerateMonthsBetween(startDate, endDate, fakeEntrepriseRapports.Rapports);
+
             ViewData["entrepriseId"] = fakeEntrepriseRapports.Entreprise.Id;
 
             return View(datesGroupedByYear);
@@ -88,9 +89,6 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
 
         public async Task<IActionResult> Details(int entrepriseId, int RapportId)
         {
-            //fetch entreprise
-            //
-            await Task.CompletedTask;
             return View();
         }
 
@@ -105,6 +103,24 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upsert(EntrepriseInsertPeriod vm)
         {
+
+
+            //create new rapport
+            Rapport rapport = new Rapport()
+            {
+                DateDebut = DateTime.Now,
+                Equipements = new List<EquipementRapport>()
+                {
+                    new EquipementRapport()
+                    {
+                      //EquipementId  = 3,
+                      //Rapport = rapport,
+                      //Mesure = 
+                    }
+                }
+            };
+
+
             await Task.CompletedTask;
             if (ModelState.IsValid)
             {
@@ -144,7 +160,6 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
                 // pull out month and year
                 from = from.AddMonths(1);
             };
-
             return dates.ToLookup(date => date.Item1.Year.ToString());
         }
     }

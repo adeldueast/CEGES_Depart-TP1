@@ -18,6 +18,9 @@ namespace CEGES_DataAccess.Persistence
         public DbSet<Groupe> Groupes { get; set; }
         public DbSet<Rapport> Rapports { get; set; }
 
+        //public DbSet<EquipementRapport> EquipementRapports { get; set; }
+
+
 
         //Ce n'est pas nécessaire d'utiliser les db sets suivants (pour l'instant).
         //Pour l'instant, le repo pattern utilise Equipements (classe générique abstraite) pour add/delete,
