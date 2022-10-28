@@ -13,6 +13,7 @@ using CEGES_Models;
 using AutoMapper;
 using CEGES_MVC.ViewModels.EntrepriseVMs;
 using CEGES_DataAccess.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace CEGES_MVC.Areas.Analyse.Controllers
 {
@@ -89,7 +90,18 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
 
         public async Task<IActionResult> Details(int entrepriseId, int RapportId)
         {
-            return View();
+
+            var entrepriseGroupesAndEquipementsAndRapports = await _context.Entreprises
+                .Include(e=>e.Groupes)
+                .ThenInclude(g=>g.Equipements)
+                .ThenInclude(e=>e.Rapports)
+                .Where(e => e.Id == entrepriseId 
+                && e.Groupes.SelectMany(g => g.Equipements).SelectMany(er => er.Rapports).Any(er => er.RapportId == RapportId))
+                .FirstOrDefaultAsync();
+
+            //map domain to vm
+            //var vm = _mapper.Map<EntrepriseInsertPeriod>(entrepriseGroupesAndEquipementsAndRapports);
+            return View(entrepriseGroupesAndEquipementsAndRapports;
         }
 
         public async Task<IActionResult> Update(int entrepriseId, int RapportId)

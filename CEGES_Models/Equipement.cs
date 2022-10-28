@@ -25,6 +25,8 @@ namespace CEGES_Models
         [NotMapped]
         public abstract string Description { get; }
 
+        public abstract int CalculateMensuel(int mesure) ;
+
 
     }
 

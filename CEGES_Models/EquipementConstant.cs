@@ -13,6 +13,9 @@ namespace CEGES_Models
 
         public sealed override string Description { get; } = EquipementDescriptions.Constant;
 
-
+        public override int CalculateMensuel(int mesure)
+        {
+            return (int)(Quantite * 30);
+        }
     }
 }

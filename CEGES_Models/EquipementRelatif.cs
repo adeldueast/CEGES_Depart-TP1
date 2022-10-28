@@ -14,6 +14,13 @@ namespace CEGES_Models
 
         public float IntensiteMax { get; set; }
 
-        public sealed override   string Description { get; } = EquipementDescriptions.Relatif;
+        public sealed override string Description { get; } = EquipementDescriptions.Relatif;
+
+        public override int CalculateMensuel(int mesure)
+        {
+            return (int)(IntensiteZero + (IntensiteMax - IntensiteZero) * 0.72) * 30;
+
+            //( (0.07 tonne/jour + (2.42 tonnes/jour – 0.07 tonne/jour) × 72%) × 30 jours/mois)
+        }
     }
 }

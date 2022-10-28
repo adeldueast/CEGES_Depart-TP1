@@ -14,5 +14,10 @@ namespace CEGES_Models
         public int FacteurConversion { get; set; }
 
         public sealed override string Description { get; } = EquipementDescriptions.Lineaire;
+
+        public override int CalculateMensuel(int mesure)
+        {
+            return mesure * FacteurConversion;
+        }
     }
 }
