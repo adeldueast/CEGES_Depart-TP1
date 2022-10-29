@@ -17,6 +17,9 @@ namespace CEGES_MVC.ViewModels.EntrepriseVM
 
         public int EquipementsCount { get; set; }
 
+        public int RapportsCount { get; set; }
+
+
 
         //public int PeriodesCount { get; set; }
 

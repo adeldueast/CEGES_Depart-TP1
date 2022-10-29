@@ -35,7 +35,7 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
         public async Task<IActionResult> Insert(int id)
         {
             //il faut valider que lentreprise existe pour lui assigner un nouveau groupe
-            var entreprise = await _entrepriseService.GetById(id);
+            var entreprise = await _entrepriseService.GetByIdWithGroupesWithEquipements(id);
 
             return View("Upsert", new GroupeUpsertVM() { EntrepriseId = entreprise.Id, EntrepriseNom = entreprise.Nom });
 

@@ -18,9 +18,15 @@ namespace CEGES_MVC.ViewModels.EquipementVMs
 
         public int Mesure { get; set; }
 
+
         public EquipementLineaireVM() : base(EquipementTypes.Lineaire,EquipementDescriptions.Lineaire)
         {
 
+        }
+
+        public override int CalculateMensuel(int mesure)
+        {
+            return mesure * FacteurConversion;
         }
     }
 }

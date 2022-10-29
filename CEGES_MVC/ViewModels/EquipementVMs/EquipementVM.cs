@@ -13,11 +13,12 @@ namespace CEGES_MVC.ViewModels.EquipementVMs
 
         public string Type { get; set; }
 
+        //public string GroupeNom { get; set; }
+
         public int GroupeId { get; set; }
 
         public string Description { get; private set; }
 
-       
 
         public EquipementVM(string Type, string Description)
         {
@@ -25,6 +26,6 @@ namespace CEGES_MVC.ViewModels.EquipementVMs
             this.Description = Description;
         }
 
-
+        public abstract int CalculateMensuel(int mesure);
     }
 }

@@ -26,5 +26,11 @@ namespace CEGES_MVC.ViewModels.EquipementVMs
 
         }
 
+        public override int CalculateMensuel(int mesure)
+        {
+            return (int)(IntensiteZero + (IntensiteMax - IntensiteZero) * 0.72) * 30;
+
+            //( (0.07 tonne/jour + (2.42 tonnes/jour – 0.07 tonne/jour) × 72%) × 30 jours/mois)
+        }
     }
 }

@@ -2,9 +2,9 @@
 using CEGES_MVC.ViewModels.GroupeVMs;
 using System.Collections.Generic;
 
-namespace CEGES_MVC.ViewModels.EntrepriseVMs
+namespace CEGES_MVC.ViewModels.RapportVMs
 {
-    public class EntrepriseInsertPeriod
+    public class RapportInsertVM
     {
         public int Id { get; set; } = 0;
 

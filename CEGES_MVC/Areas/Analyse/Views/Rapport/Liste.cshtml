@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "Analyse des entreprises";
     var entrepriseId = ViewBag.entrepriseId;
+
 }
 <h3>
     Liste des rapports pour Entreprise exemple
@@ -35,7 +36,7 @@
                                 continue;
                             }
                              @Html.ActionLink(
-                                    $"{date.Item1.ToMonthName().CapitalizeFirst()} {date.Item1.Year}",
+                                    $"+ {date.Item1.ToMonthName().CapitalizeFirst()} {date.Item1.Year}",
                                     nameof(RapportController.Insert),
                                     new { entrepriseId = @entrepriseId, RapportDebut = date.Item1 },
                                     new { @class = "list-group-item list-group-item-action" }

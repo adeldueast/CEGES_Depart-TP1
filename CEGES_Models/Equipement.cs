@@ -22,6 +22,7 @@ namespace CEGES_Models
 
         public List<EquipementRapport> Rapports { get; set; }
 
+
         [NotMapped]
         public abstract string Description { get; }
 

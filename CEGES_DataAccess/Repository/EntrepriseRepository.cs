@@ -19,12 +19,16 @@ namespace CEGES_DataAccess.Repository
             _db = db;
         }
 
-        public async Task<List<Entreprise>> GetAllWithGroupesWithEquipements()
+        public async Task<List<Entreprise>> GetAllWithGroupesWithEquipementsWithRapports()
         {
-            return await _db.Entreprises.Include(e => e.Groupes).ThenInclude(g => g.Equipements).ToListAsync();
+            return await _db.Entreprises
+                .Include(e => e.Groupes)
+                .ThenInclude(g => g.Equipements)
+                .ThenInclude(e=>e.Rapports)
+                .ToListAsync();
         }
 
-        public async Task<IEnumerable<EntrepriseRapports>> GetByIdWithPeriods(int id)
+        public async Task<EntrepriseRapports> GetByIdWithPeriods(int id)
         {
 
             var entrepriseWithRapports = await _db.Entreprises
@@ -40,7 +44,8 @@ namespace CEGES_DataAccess.Repository
                     .OrderBy(r => r.DateDebut)
                     .ToList()
 
-                }).ToListAsync();
+                }).FirstOrDefaultAsync();
+
 
             return entrepriseWithRapports;
         }

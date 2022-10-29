@@ -1,26 +1,38 @@
-﻿@using CEGES_MVC.ViewModels.EntrepriseVMs
-@using CEGES_MVC.ViewModels.EquipementVMs
+﻿@using CEGES_MVC.ViewModels.EquipementVMs
+@using CEGES_MVC.ViewModels.RapportVMs
 @using CEGES_Util
-@model EntrepriseInsertPeriod
+@model RapportDetailsVM
+
 @{
     ViewData["Title"] = "Février 2022";
-    var date = DateTime.Parse(Context.Request.Query["RapportDebut"]);
+    //var date = DateTime.Parse(Context.Request.Query["RapportDebut"]);
+    var date = (DateTime)ViewData["DateDebut"];
+
+
 }
 
 <h3>
     @*date.Item1.ToMonthName().CapitalizeFirst()} {date.Item1.Year}*@
     @($"{date.ToMonthName().CapitalizeFirst()} {date.Year}")
 
-    <small class="text-muted">(@Model.Nom)</small>
+
+    <small class="text-muted">(@Html.DisplayFor(m=>m.EntrepriseNom)</small>
 </h3>
 
 <form asp-action="Upsert" method="post" enctype="multipart/form-data">
 
-    @foreach (var groupe in Model.Groupes)
+    @Html.HiddenFor(m=>m.Id);
+    @Html.HiddenFor(m=>m.EntrepriseNom)
+    @Html.HiddenFor(m=>m.EntrepriseId);
+    @Html.HiddenFor(m=>m.DateDebut)
+
+
+    @foreach (var groupe in Model.GroupedEquipements)
     {
         <div class="list-group list-group-flush">
             <div class="list-group-item active mt-3">
-                @groupe.Nom
+                @groupe.Key
+
             </div>
             <div class="list-group-item">
                 <div class="row">
@@ -47,37 +59,44 @@
                     </div>
                 </div>
             </div>
-            @foreach (var equipement in groupe.Equipements)
+            @foreach (var equipement in groupe.Value.Select((value, i) => (value, i)))
             {
+                @Html.HiddenFor(m=>m.GroupedEquipements[groupe.Key][equipement.i].GroupeNom)
+
+                @Html.HiddenFor(m=>m.GroupedEquipements[groupe.Key][equipement.i].EquipementVM.Id)
+                @Html.HiddenFor(m=>m.GroupedEquipements[groupe.Key][equipement.i].EquipementVM.Nom)
+                @Html.HiddenFor(m=>m.GroupedEquipements[groupe.Key][equipement.i].EquipementVM.Type)
+                @Html.HiddenFor(m=>m.GroupedEquipements[groupe.Key][equipement.i].EquipementVM.GroupeId)
+                @Html.HiddenFor(m=>m.GroupedEquipements[groupe.Key][equipement.i].EquipementVM.Description)
+               
+
+
                 <div class="list-group-item">
                     <div class="row">
                         <div class="col-6">
                             <div class="row">
                                 <div class="col-6 font-weight-bold">
-                                    @equipement.Nom
+                                    @equipement.value.EquipementVM.Nom
                                 </div>
                                 <div class="col-6">
-                                    @equipement.Type
+                                    @equipement.value.EquipementVM.Type
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
                                     @*10 t/j (calcul i think??)*@
-                                    @switch (equipement)
+                                    @switch (equipement.value.EquipementVM)
                                     {
                                         case EquipementConstantVM c:
                                             @Html.DisplayFor(m=>c.Quantite) @Html.Raw(" t / j x 30 j")
                                             break;
                                         case EquipementLineaireVM l:
                                             @*TODO: A REVOIR*@
-                                            @Html.Raw($"{l.FacteurConversion} t / {l.UniteMesure} x 0 {l.UniteMesure}")
-
+                                            @Html.Raw($"{l.FacteurConversion} t / {l.UniteMesure} x {equipement.value.Mesure} {l.UniteMesure}")
                                             break;
                                         case EquipementRelatifVM r:
                                             @*0 % de[1, 57 à 12, 8] t / j × 31 j*@
-
-                                            @Html.Raw($"0% de [{r.IntensiteZero} à {r.IntensiteZero}] t / j x 30 j")
-
+                                            @Html.Raw($"{equipement.value.Mesure}% de [{r.IntensiteZero} à {r.IntensiteZero}] t / j x 30 j")
                                             break;
                                         default:
                                             break;
@@ -86,17 +105,17 @@
                             </div>
                         </div>
                         <div class="col-3">
-                            @switch (equipement)
+                            @switch (equipement.value.EquipementVM)
                             {
                                 case EquipementConstantVM c:
                                     Html.Raw("&nbsp;");
                                     break;
                                 case EquipementLineaireVM l:
-                                    <input asp-for="@l.Mesure" type="text" />
+                                    @Html.TextBoxFor(m=>m.GroupedEquipements[groupe.Key][equipement.i].Mesure)
                                     @Html.DisplayFor(m=>l.UniteMesure)
                                     break;
                                 case EquipementRelatifVM r:
-                                    <input asp-for="@r.Mesure" type="text" />
+                                    @Html.TextBoxFor(m=>m.GroupedEquipements[groupe.Key][equipement.i].Mesure)
                                     @Html.Raw("%")
                                     break;
                                 default:

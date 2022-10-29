@@ -5,9 +5,11 @@ namespace CEGES_MVC.Interfaces
     public interface IEntrepriseService
     {
 
-        Task<IEnumerable<Entreprise>> GetAll();
+        Task<IEnumerable<Entreprise>> GetAllWithGroupesWithEquipementsWithRapports();
 
         Task<object> GetAllWithPeriods();
+
+        Task<Entreprise> GetByIdWithGroupesWithEquipements(int id);
 
         Task<Entreprise> GetById(int id);
 

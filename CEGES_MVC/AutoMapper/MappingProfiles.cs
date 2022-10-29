@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using CEGES_Models;
 using CEGES_MVC.ViewModels.EntrepriseVM;
-using CEGES_MVC.ViewModels.EntrepriseVMs;
 using CEGES_MVC.ViewModels.EquipementVMs;
 using CEGES_MVC.ViewModels.GroupeVMs;
+using CEGES_MVC.ViewModels.RapportVMs;
 using System.Linq;
 using System.Net;
 
@@ -20,7 +20,7 @@ namespace CEGES_MVC.AutoMapper
                 .ForMember(dest => dest.EquipementsCount, opt => opt.MapFrom(src => src.Groupes.SelectMany(x => x.Equipements).Count()));
             CreateMap<Entreprise, EntrepriseDetailsVM>();
 
-            CreateMap<Entreprise, EntrepriseInsertPeriod>().ReverseMap();
+            CreateMap<Entreprise, RapportInsertVM>().ReverseMap();
 
 
             #endregion
@@ -41,7 +41,11 @@ namespace CEGES_MVC.AutoMapper
             CreateMap<EquipementConstant, EquipementConstantVM>().ReverseMap();
             CreateMap<EquipementLineaire, EquipementLineaireVM>().ReverseMap();
             CreateMap<EquipementRelatif, EquipementRelatifVM>().ReverseMap();
+
+
             #endregion
+
+
 
         }
     }

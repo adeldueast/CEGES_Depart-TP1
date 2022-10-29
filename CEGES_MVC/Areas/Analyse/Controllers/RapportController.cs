@@ -11,9 +11,11 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CEGES_Models;
 using AutoMapper;
-using CEGES_MVC.ViewModels.EntrepriseVMs;
 using CEGES_DataAccess.Persistence;
 using Microsoft.EntityFrameworkCore;
+using CEGES_Models.Exceptions;
+using CEGES_MVC.ViewModels.RapportVMs;
+using CEGES_MVC.ViewModels.EquipementVMs;
 
 namespace CEGES_MVC.Areas.Analyse.Controllers
 {
@@ -38,7 +40,7 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
         public async Task<IActionResult> Index()
         {
             var entrepriseRapportsCountVM = await _uow.Entreprises.GetAllWithPeriodsCount();
-            return View();
+            return View(entrepriseRapportsCountVM);
         }
 
         public async Task<IActionResult> Liste(int id)
@@ -68,9 +70,11 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
             var startDate = new DateTime(2020, 11, 1);
             var endDate = new DateTime(2022, 10, 1);
 
-            var datesGroupedByYear = GenerateMonthsBetween(startDate, endDate, fakeEntrepriseRapports.Rapports);
+            //liste de date
 
-            ViewData["entrepriseId"] = fakeEntrepriseRapports.Entreprise.Id;
+            var datesGroupedByYear = GenerateMonthsBetween(startDate, endDate, entrepriseRapports.Rapports);
+
+            ViewData["entrepriseId"] = entrepriseRapports.Entreprise.Id;
 
             return View(datesGroupedByYear);
         }
@@ -78,80 +82,175 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
         public async Task<IActionResult> Insert(int entrepriseId, DateTime RapportDebut)
         {
 
-            //Fetch all groups inluding their equipement
+            //ici le rapport nexiste pas, on fetch simplement l'entrepris en son entier (entreprise>groupes>equipements)
+            //Fetch all groups inluding their
+            var entreprise = await _entrepriseService.GetByIdWithGroupesWithEquipements(entrepriseId);
 
-            var entrepriseGroupesAndEquipements = await _entrepriseService.GetById(entrepriseId);
+            if (entreprise is null) throw new NotFoundException(nameof(Entreprise), entrepriseId);
 
-            //map domain to vm
-            var vm = _mapper.Map<EntrepriseInsertPeriod>(entrepriseGroupesAndEquipements);
 
-            return View("Upsert", vm);
+            var groupedEquipements2 = entreprise.Groupes.SelectMany(g => g.Equipements)
+                .Select(e => new EquipementAvecMesure
+                {
+                    GroupeNom = e.Groupe.Nom,
+                    EquipementVM = _mapper.Map(e, e.GetType(), typeof(EquipementVM)) as EquipementVM,
+                    Mesure = 0
+                })
+                .GroupBy(e => e.GroupeNom).ToDictionary(g => g.Key, g => g.ToList());
+
+            var VM = new RapportDetailsVM
+            {
+                DateDebut = RapportDebut,
+                EntrepriseNom = entreprise.Nom,
+                EntrepriseId = entrepriseId,
+                GroupedEquipements = groupedEquipements2,
+            };
+
+
+            ViewData["DateDebut"] = RapportDebut;
+            return View("Upsert", VM);
         }
 
         public async Task<IActionResult> Details(int entrepriseId, int RapportId)
         {
 
-            var entrepriseGroupesAndEquipementsAndRapports = await _context.Entreprises
-                .Include(e=>e.Groupes)
-                .ThenInclude(g=>g.Equipements)
-                .ThenInclude(e=>e.Rapports)
-                .Where(e => e.Id == entrepriseId 
-                && e.Groupes.SelectMany(g => g.Equipements).SelectMany(er => er.Rapports).Any(er => er.RapportId == RapportId))
-                .FirstOrDefaultAsync();
+            var entreprise = await _entrepriseService.GetById(entrepriseId);
+
+
+            var rapport = await _context.Rapports
+                .Include(r => r.Equipements)
+                .ThenInclude(e => e.Equipement)
+                .ThenInclude(e => e.Groupe)
+                .SingleOrDefaultAsync(r => r.Id == RapportId);
+
+            if (rapport == null) throw new NotFoundException(nameof(Rapport), RapportId);
+
+            //var vm = _mapper.Map(equipement, equipement.GetType(), typeof(EquipementVM)) as EquipementVM;
+            //var groupedEquipements = rapport.Equipements
+            //    .Select(e => _mapper.Map(e, e.GetType(), typeof(EquipementVM)) as EquipementVM)
+            //    .GroupBy(e => e.GroupeNom);
+
+            var groupedEquipements2 = rapport.Equipements
+                .Select(er => new EquipementAvecMesure
+                {
+                    GroupeNom = er.Equipement.Groupe.Nom,
+                    EquipementVM = _mapper.Map(er.Equipement, er.Equipement.GetType(), typeof(EquipementVM)) as EquipementVM,
+                    Mesure = er.Mesure
+                })
+               .GroupBy(e => e.GroupeNom).ToDictionary(g => g.Key, g => g.ToList());
+
+            var VM = new RapportDetailsVM
+            {
+                Id = RapportId,
+                DateDebut = rapport.DateDebut,
+                EntrepriseNom = entreprise.Nom,
+                EntrepriseId = entrepriseId,
+                GroupedEquipements = groupedEquipements2,
+            };
 
             //map domain to vm
             //var vm = _mapper.Map<EntrepriseInsertPeriod>(entrepriseGroupesAndEquipementsAndRapports);
-            return View(entrepriseGroupesAndEquipementsAndRapports;
+            ViewData["DateDebut"] = rapport.DateDebut;
+
+
+            return View(VM);
         }
 
         public async Task<IActionResult> Update(int entrepriseId, int RapportId)
         {
-            await Task.CompletedTask;
-            VM_Vide vm = new VM_Vide();
-            return View("Upsert", vm);
+            var entreprise = await _entrepriseService.GetById(entrepriseId);
+
+
+            var rapport = await _context.Rapports
+                .Include(r => r.Equipements)
+                .ThenInclude(e => e.Equipement)
+                .ThenInclude(e => e.Groupe)
+                .SingleOrDefaultAsync(r => r.Id == RapportId);
+
+            if (rapport == null) throw new NotFoundException(nameof(Rapport), RapportId);
+
+            var groupedEquipements2 = rapport.Equipements
+               .Select(er => new EquipementAvecMesure
+               {
+                   GroupeNom = er.Equipement.Groupe.Nom,
+                   EquipementVM = _mapper.Map(er.Equipement, er.Equipement.GetType(), typeof(EquipementVM)) as EquipementVM,
+                   Mesure = er.Mesure
+               })
+               .GroupBy(e => e.GroupeNom).ToDictionary(g => g.Key, g => g.ToList());
+
+            var VM = new RapportDetailsVM
+            {
+                Id = RapportId,
+                DateDebut = rapport.DateDebut,
+                EntrepriseNom = entreprise.Nom,
+                EntrepriseId = entrepriseId,
+                GroupedEquipements = groupedEquipements2,
+            };
+
+            ViewData["DateDebut"] = rapport.DateDebut;
+
+            return View("Upsert", VM);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upsert(EntrepriseInsertPeriod vm)
+        public async Task<IActionResult> Upsert(RapportDetailsVM VM)
         {
 
 
-            //create new rapport
-            Rapport rapport = new Rapport()
-            {
-                DateDebut = DateTime.Now,
-                Equipements = new List<EquipementRapport>()
-                {
-                    new EquipementRapport()
-                    {
-                      //EquipementId  = 3,
-                      //Rapport = rapport,
-                      //Mesure = 
-                    }
-                }
-            };
-
-
-            await Task.CompletedTask;
             if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Details));
+                var equipments = VM.GroupedEquipements
+              .SelectMany(ge => ge.Value)
+              .Select(em => new EquipementRapport
+              {
+                  EquipementId = em.EquipementVM.Id,
+                  Mesure = em.Mesure,
+
+              });
+
+                //create new rapport
+                Rapport rapport = new Rapport()
+                {
+                    DateDebut = VM.DateDebut,
+                    Equipements = equipments.ToList()
+                };
+                if (VM.Id == 0)
+                {
+
+                    _context.Rapports.Add(rapport);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Details), new { entrepriseId = VM.EntrepriseId, RapportId = rapport.Id });
+
+                }
+                else
+                {
+                    var rapportDomain = await _context.Rapports.Include(r => r.Equipements).SingleAsync(r=>r.Id == VM.Id);
+                    rapportDomain.Equipements = rapport.Equipements;
+
+                    _context.Rapports.Update(rapportDomain);
+                    await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Details), new { entrepriseId = VM.EntrepriseId, RapportId = rapportDomain.Id });
+
+                }
             }
-            if (vm.Id > 0)
-            {
-                return View(nameof(Liste), new { id = vm.Id });
-            }
-            else
-            {
-                return View(nameof(Index));
-            }
+            return View(VM);
+            //if (VM.Id > 0)
+            //{
+            //    return View(nameof(Liste), new { id = VM.Id });
+            //}
+            //else
+            //{
+            //    return View(nameof(Index));
+            //}
         }
 
         public ILookup<string, (DateTime, int?)> GenerateMonthsBetween(DateTime from, DateTime end, IEnumerable<Rapport> rapports)
         {
 
             ICollection<(DateTime, int?)> dates = new List<(DateTime, int?)>();
+
+
             Queue<Rapport> _rapports = new Queue<Rapport>(rapports);
             while (from <= end)
             {

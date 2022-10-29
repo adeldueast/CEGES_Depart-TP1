@@ -16,8 +16,8 @@ namespace CEGES_Models
 
         public DateTime DateFin { get; set; }
 
-        public List<EquipementRapport> Equipements { get; set; }
+        public IEnumerable<EquipementRapport> Equipements { get; set; }
 
-      
+
     }
 }

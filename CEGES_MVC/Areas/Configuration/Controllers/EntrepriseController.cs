@@ -22,17 +22,20 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var entreprises = await _entrepriseService.GetAll();
+            var entreprises = await _entrepriseService.GetAllWithGroupesWithEquipementsWithRapports();
 
             //TODO: map dm to vm
-            var vm = entreprises.Select(x => new EntrepriseSummaryVM
+            var vm = entreprises.Select(entreprise => new EntrepriseSummaryVM
             {
-                Id = x.Id,
-                Nom = x.Nom,
-                GroupesCount = x.Groupes.Count,
-                EquipementsCount = x.Groupes.SelectMany(x => x.Equipements).Count()
+                Id = entreprise.Id,
+                Nom = entreprise.Nom,
+                GroupesCount = entreprise.Groupes.Count,
+                EquipementsCount = entreprise.Groupes.SelectMany(x => x.Equipements).Count(),
+                RapportsCount = entreprise.Groupes.SelectMany(g => g.Equipements).SelectMany(e => e.Rapports).Count(),
 
             }).ToList();
+
+            
 
             return View(vm);
         }
@@ -40,7 +43,7 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
         public async Task<IActionResult> Details(int id)
         {
 
-            var entreprise = await _entrepriseService.GetById(id);
+            var entreprise = await _entrepriseService.GetByIdWithGroupesWithEquipements(id);
 
 
             var vm = new EntrepriseDetailsVM()
@@ -71,7 +74,7 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
             }
 
             // Récupérer l'entreprise existante
-            var entreprise = await _entrepriseService.GetById(id.Value);
+            var entreprise = await _entrepriseService.GetByIdWithGroupesWithEquipements(id.Value);
 
             EntrepriseUpsertVM entrepriseVM = new()
             {

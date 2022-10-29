@@ -50,6 +50,88 @@ namespace CEGES_DataAccess.Persistence
             modelBuilder.Entity<Equipement>()
                  .Property(e => e.Type)
                  .HasColumnName(nameof(Equipement.Type));
+
+
+            modelBuilder.Entity<Entreprise>().HasData(new Entreprise
+            {
+                Id = 1,
+                Nom = "Ubisoft"
+            });
+
+
+           
+            modelBuilder.Entity<Groupe>().HasData(
+               new Groupe
+               {
+                   Id = 1,
+                   Nom = "Groupe 1",
+                   EntrepriseId = 1
+               },
+               new Groupe
+               {
+                   Id = 2,
+                   Nom = "Groupe 2",
+                   EntrepriseId = 1
+
+               });
+
+            //modelBuilder.Entity<Equipement>().HasData(
+            //  new EquipementConstant
+            //  {
+            //      Id = 1,
+            //      Type = EquipementTypes.Constant,
+            //      GroupeId = 1,
+            //      Nom = "equ constant"
+            //  },
+            //  new EquipementLineaire
+            //  {
+            //      Id = 2,
+            //      Type = EquipementTypes.Lineaire,
+            //      GroupeId = 1,
+            //      Nom = "equ lineaire",
+                  
+
+
+            //  }, new EquipementRelatif
+            //  {
+            //      Id = 3,
+            //      Type = EquipementTypes.Relatif,
+            //      GroupeId = 1,
+            //      Nom = "equ relatif"
+
+            //  });
+
+
+            //modelBuilder.Entity<EquipementRapport>().HasData(
+            //  new EquipementRapport
+            //  {
+            //      EquipementId = 1,
+            //      RapportId = 1,
+            //      Mesure = 10
+
+            //  },
+            //  new EquipementRapport
+            //  {
+            //      EquipementId = 2,
+            //      RapportId = 1,
+            //      Mesure = 10
+
+            //  }, new EquipementRapport
+            //  {
+            //      EquipementId = 3,
+            //      RapportId = 1,
+            //      Mesure = 10
+
+            //  });
+
+            modelBuilder.Entity<Rapport>().HasData(new Rapport
+            {
+                Id = 1,
+                DateDebut = DateTime.Now,
+            });
+
+
+
         }
     }
 }

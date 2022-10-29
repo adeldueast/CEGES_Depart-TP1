@@ -11,9 +11,9 @@ namespace CEGES_MVC.Implementation
 
         public EntrepriseService(IUnitOfWork uow) => _uow = uow;
 
-        public async Task<IEnumerable<Entreprise>> GetAll() => await _uow.Entreprises.GetAllWithGroupesWithEquipements();
+        public async Task<IEnumerable<Entreprise>> GetAllWithGroupesWithEquipementsWithRapports() => await _uow.Entreprises.GetAllWithGroupesWithEquipementsWithRapports();
 
-        public async Task<Entreprise> GetById(int id)
+        public async Task<Entreprise> GetByIdWithGroupesWithEquipements(int id)
         {
 
             var entreprise = await _uow.Entreprises.GetByIdWithGroupesWithEquipements(id);
@@ -61,6 +61,19 @@ namespace CEGES_MVC.Implementation
             var a = await _uow.Entreprises.GetAllWithPeriodsCount();
 
             return a;
+        }
+
+        public async Task<Entreprise> GetById(int id)
+        {
+            var entreprise = await _uow.Entreprises.GetAsync(id);
+
+            if (entreprise == null)
+            {
+                throw new NotFoundException("Entreprise", id);
+            }
+
+
+            return entreprise;
         }
     }
 }
