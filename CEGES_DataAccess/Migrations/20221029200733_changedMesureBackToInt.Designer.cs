@@ -4,6 +4,7 @@ using CEGES_DataAccess.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CEGES_DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221029200733_changedMesureBackToInt")]
+    partial class changedMesureBackToInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -148,7 +150,7 @@ namespace CEGES_DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            DateDebut = new DateTime(2022, 10, 29, 16, 25, 36, 449, DateTimeKind.Local).AddTicks(6058),
+                            DateDebut = new DateTime(2022, 10, 29, 16, 7, 32, 980, DateTimeKind.Local).AddTicks(5610),
                             DateFin = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -157,8 +159,8 @@ namespace CEGES_DataAccess.Migrations
                 {
                     b.HasBaseType("CEGES_Models.Equipement");
 
-                    b.Property<float>("Quantite")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Quantite")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasDiscriminator().HasValue("Constant");
                 });
@@ -167,8 +169,8 @@ namespace CEGES_DataAccess.Migrations
                 {
                     b.HasBaseType("CEGES_Models.Equipement");
 
-                    b.Property<float>("FacteurConversion")
-                        .HasColumnType("real");
+                    b.Property<decimal>("FacteurConversion")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UniteMesure")
                         .HasColumnType("nvarchar(max)");
@@ -180,11 +182,11 @@ namespace CEGES_DataAccess.Migrations
                 {
                     b.HasBaseType("CEGES_Models.Equipement");
 
-                    b.Property<float>("IntensiteMax")
-                        .HasColumnType("real");
+                    b.Property<decimal>("IntensiteMax")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<float>("IntensiteZero")
-                        .HasColumnType("real");
+                    b.Property<decimal>("IntensiteZero")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasDiscriminator().HasValue("Relatif");
                 });

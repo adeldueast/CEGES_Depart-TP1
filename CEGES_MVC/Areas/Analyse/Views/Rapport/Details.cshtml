@@ -1,8 +1,10 @@
 ﻿@using CEGES_MVC.ViewModels.EquipementVMs
 @using CEGES_MVC.ViewModels.RapportVMs
+@using CEGES_Util
 @model RapportDetailsVM
 @{
     ViewData["Title"] = "Janvier 2022";
+    decimal totalEmission = 0;
 }
 
 <h3>
@@ -20,13 +22,11 @@
 
 <form asp-action="Upsert" method="post" enctype="multipart/form-data">
 
-    @{
-        var totalConsumption = 0;
-    }
+
     @Html.HiddenFor(m=>m.DateDebut)
     @foreach (var group in Model.GroupedEquipements)
     {
-
+        decimal groupEmissionTotal = 0;
         <div class="list-group list-group-flush">
             <div class="list-group-item active mt-3">
                 @group.Key
@@ -61,7 +61,7 @@
 
             @foreach (var equipement in group.Value)
             {
-              
+
                 <div class="list-group-item">
                     <div class="row">
                         <div class="col-6">
@@ -90,7 +90,7 @@
                                         case EquipementRelatifVM r:
                                             @*0 % de[1, 57 à 12, 8] t / j × 31 j*@
 
-                                            @Html.Raw($"{equipement.Mesure}% de [{r.IntensiteZero} à {r.IntensiteZero}] t / j x 30 j")
+                                            @Html.Raw($"{equipement.Mesure}% de [{r.IntensiteZero} à {r.IntensiteMax}] t / j x 30 j")
 
                                             break;
                                         default:
@@ -113,7 +113,12 @@
                             }
                         </div>
                         <div class="col-3">
-                            @equipement.EquipementVM.CalculateMensuel(equipement.Mesure) t
+                            @{
+                                var equipementEmission = @equipement.EquipementVM.CalculateMensuel(equipement.Mesure);
+                                groupEmissionTotal += equipementEmission;
+
+                            }
+                            @equipementEmission  t
                         </div>
                     </div>
                 </div>
@@ -122,7 +127,10 @@
 
         </div>
         <div class="list-group-item pb-3 font-weight-bold">
-            Émissions du groupe : @group.Value.Select(x=>x.Mesure).Sum() tonnes
+            @{
+                totalEmission += groupEmissionTotal;
+            }
+            Émissions du groupe : @groupEmissionTotal tonnes
         </div>
     }
 
@@ -133,12 +141,12 @@
         Total des émissions pour @Model.EntrepriseNom
     </div>
     <div class="list-group-item pb-3 font-weight-bold">
-        Émissions totales : @Model.GroupedEquipements.SelectMany(x=>x.Value).Select(y=>y.Mesure).Sum() tonnes
+        Émissions totales : @totalEmission.RoundToSignificantDigits(4) tonnes
     </div>
 
     <div class="form-group row mt-3">
         <div class="col-4">
-            <a asp-action="Liste" asp-route-id="@Model.EntrepriseId" class="btn btn-secondary w-100"><i class="fas fa-sign-out-alt"></i> Retour à Entreprise exemple</a>
+            <a asp-action="Liste" asp-route-id="@Model.EntrepriseId" class="btn btn-secondary w-100"><i class="fas fa-sign-out-alt"></i> Retour à @Model.EntrepriseNom</a>
         </div>
     </div>
 </form>

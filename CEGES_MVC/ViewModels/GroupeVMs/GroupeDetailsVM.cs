@@ -16,6 +16,8 @@ namespace CEGES_MVC.ViewModels.GroupeVMs
 
         public int EntrepriseId { get; set; }
 
+        public string EntrepriseNom { get; set; }
+
         public List<EquipementVM> Equipements { get; set; } = new();
     }
 }

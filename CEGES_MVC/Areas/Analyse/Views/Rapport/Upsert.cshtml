@@ -16,14 +16,14 @@
     @($"{date.ToMonthName().CapitalizeFirst()} {date.Year}")
 
 
-    <small class="text-muted">(@Html.DisplayFor(m=>m.EntrepriseNom)</small>
+    <small class="text-muted">(@Html.DisplayFor(m=>m.EntrepriseNom))</small>
 </h3>
 
 <form asp-action="Upsert" method="post" enctype="multipart/form-data">
 
-    @Html.HiddenFor(m=>m.Id);
+    @Html.HiddenFor(m=>m.Id)
     @Html.HiddenFor(m=>m.EntrepriseNom)
-    @Html.HiddenFor(m=>m.EntrepriseId);
+    @Html.HiddenFor(m=>m.EntrepriseId)
     @Html.HiddenFor(m=>m.DateDebut)
 
 
@@ -150,7 +150,7 @@
             }
         </div>
         <div class="col-4">
-            <a asp-action="Liste" class="btn btn-secondary w-100"><i class="fas fa-sign-out-alt"></i> Retour à Entreprise exemple</a>
+            <a asp-action="Liste" asp-route-id="@Model.EntrepriseId" class="btn btn-secondary w-100"><i class="fas fa-sign-out-alt"></i> Retour à @Model.EntrepriseNom</a>
         </div>
     </div>
 </form>

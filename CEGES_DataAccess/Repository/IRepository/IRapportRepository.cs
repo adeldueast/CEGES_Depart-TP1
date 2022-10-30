@@ -10,5 +10,7 @@ namespace CEGES_DataAccess.Repository.IRepository
     public interface IRapportRepository : IRepository<Rapport>
     {
         void Update(Rapport rapport);
+
+        Task<Rapport> GetByIdWithEquipementsWithGroupes(int id);
     }
 }

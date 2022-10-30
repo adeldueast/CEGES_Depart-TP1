@@ -1,6 +1,7 @@
 ﻿using CEGES_DataAccess.Persistence;
 using CEGES_DataAccess.Repository.IRepository;
 using CEGES_Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,17 @@ namespace CEGES_DataAccess.Repository
         public RapportRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
+        }
+
+        public async Task<Rapport> GetByIdWithEquipementsWithGroupes(int id)
+        {
+            var rapport = await _db.Rapports
+                .Include(r => r.Equipements)
+                .ThenInclude(e => e.Equipement)
+                .ThenInclude(e => e.Groupe)
+                .SingleOrDefaultAsync(r => r.Id == id);
+
+            return rapport;
         }
 
         public void Update(Rapport rapport)

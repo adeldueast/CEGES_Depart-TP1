@@ -19,6 +19,7 @@ namespace CEGES_DataAccess.Repository
             _db = db;
         }
 
+
         public void Update(Equipement equipement)
         {
             _db.Update(equipement);

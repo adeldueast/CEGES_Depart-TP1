@@ -39,8 +39,11 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var entrepriseRapportsCountVM = await _uow.Entreprises.GetAllWithPeriodsCount();
-            return View(entrepriseRapportsCountVM);
+            var entrepriseRapportsCount = await _uow.Entreprises.GetAllWithRapportsCount();
+
+            var vm = _mapper.Map<IEnumerable<EntrepriseRapportsCount>, IEnumerable<EntrepriseRapportsCountVM>>(entrepriseRapportsCount);
+
+            return View(vm);
         }
 
         public async Task<IActionResult> Liste(int id)
@@ -48,34 +51,14 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
 
 
             //get tout les rapports de l'entreprise...
-            var entrepriseRapports = await _uow.Entreprises.GetByIdWithPeriods(id);
-
-            var fakeEntrepriseRapports = new EntrepriseRapports
-            {
-                Entreprise = new() { Id = 1 },
-                Rapports = new List<Rapport>()
-                {
-                    new Rapport
-                    {
-                        Id = 4,
-                        DateDebut = new DateTime(2020,11,1)
-                    }, new Rapport
-                    {
-                        Id = 2,
-                        DateDebut = new DateTime(2022,10,1)
-                    }
-                }
-            };
-
+            var entrepriseRapports = await _uow.Entreprises.GetByIdWithRapports(id);
             var startDate = new DateTime(2020, 11, 1);
             var endDate = new DateTime(2022, 10, 1);
 
-            //liste de date
-
+            //liste de dates 
             var datesGroupedByYear = GenerateMonthsBetween(startDate, endDate, entrepriseRapports.Rapports);
 
             ViewData["entrepriseId"] = entrepriseRapports.Entreprise.Id;
-
             return View(datesGroupedByYear);
         }
 
@@ -83,14 +66,12 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
         {
 
             //ici le rapport nexiste pas, on fetch simplement l'entrepris en son entier (entreprise>groupes>equipements)
-            //Fetch all groups inluding their
             var entreprise = await _entrepriseService.GetByIdWithGroupesWithEquipements(entrepriseId);
 
-            if (entreprise is null) throw new NotFoundException(nameof(Entreprise), entrepriseId);
 
-
-            var groupedEquipements2 = entreprise.Groupes.SelectMany(g => g.Equipements)
-                .Select(e => new EquipementAvecMesure
+            //liste d'equipements de l'entreprise groupé par groupe
+            var groupedEquipements = entreprise.Groupes.SelectMany(g => g.Equipements)
+                .Select(e => new EquipementAvecMesureVM
                 {
                     GroupeNom = e.Groupe.Nom,
                     EquipementVM = _mapper.Map(e, e.GetType(), typeof(EquipementVM)) as EquipementVM,
@@ -98,12 +79,14 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
                 })
                 .GroupBy(e => e.GroupeNom).ToDictionary(g => g.Key, g => g.ToList());
 
+
+            //ici c'est moin compliquer de juste creer la vm manuellement, aulieu d'utiliser le mapper..
             var VM = new RapportDetailsVM
             {
                 DateDebut = RapportDebut,
                 EntrepriseNom = entreprise.Nom,
                 EntrepriseId = entrepriseId,
-                GroupedEquipements = groupedEquipements2,
+                GroupedEquipements = groupedEquipements,
             };
 
 
@@ -114,24 +97,19 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
         public async Task<IActionResult> Details(int entrepriseId, int RapportId)
         {
 
+            //TODO: Mauvais query, rien nous garantis que le rapportId appartient au given entrepriseId
+            //A modifier dans le future!!
+
+            //fetch entreprises et throw erreur si nexiste pas
             var entreprise = await _entrepriseService.GetById(entrepriseId);
 
-
-            var rapport = await _context.Rapports
-                .Include(r => r.Equipements)
-                .ThenInclude(e => e.Equipement)
-                .ThenInclude(e => e.Groupe)
-                .SingleOrDefaultAsync(r => r.Id == RapportId);
-
+            //fetch les rapports
+            var rapport = await _uow.Rapports.GetByIdWithEquipementsWithGroupes(RapportId);
             if (rapport == null) throw new NotFoundException(nameof(Rapport), RapportId);
 
-            //var vm = _mapper.Map(equipement, equipement.GetType(), typeof(EquipementVM)) as EquipementVM;
-            //var groupedEquipements = rapport.Equipements
-            //    .Select(e => _mapper.Map(e, e.GetType(), typeof(EquipementVM)) as EquipementVM)
-            //    .GroupBy(e => e.GroupeNom);
 
-            var groupedEquipements2 = rapport.Equipements
-                .Select(er => new EquipementAvecMesure
+            var groupedEquipements = rapport.Equipements
+                .Select(er => new EquipementAvecMesureVM
                 {
                     GroupeNom = er.Equipement.Groupe.Nom,
                     EquipementVM = _mapper.Map(er.Equipement, er.Equipement.GetType(), typeof(EquipementVM)) as EquipementVM,
@@ -139,38 +117,35 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
                 })
                .GroupBy(e => e.GroupeNom).ToDictionary(g => g.Key, g => g.ToList());
 
+
             var VM = new RapportDetailsVM
             {
                 Id = RapportId,
                 DateDebut = rapport.DateDebut,
                 EntrepriseNom = entreprise.Nom,
                 EntrepriseId = entrepriseId,
-                GroupedEquipements = groupedEquipements2,
+                GroupedEquipements = groupedEquipements,
             };
 
-            //map domain to vm
-            //var vm = _mapper.Map<EntrepriseInsertPeriod>(entrepriseGroupesAndEquipementsAndRapports);
+
             ViewData["DateDebut"] = rapport.DateDebut;
-
-
             return View(VM);
         }
 
         public async Task<IActionResult> Update(int entrepriseId, int RapportId)
         {
+            //TODO: Mauvais query, rien nous garantis que le rapportId appartient au given entrepriseId
+            //A modifier dans le future!!
+
+            //fetch entreprises et throw erreur si nexiste pas
             var entreprise = await _entrepriseService.GetById(entrepriseId);
 
-
-            var rapport = await _context.Rapports
-                .Include(r => r.Equipements)
-                .ThenInclude(e => e.Equipement)
-                .ThenInclude(e => e.Groupe)
-                .SingleOrDefaultAsync(r => r.Id == RapportId);
-
+            //fetch les rapports
+            var rapport = await _uow.Rapports.GetByIdWithEquipementsWithGroupes(RapportId);
             if (rapport == null) throw new NotFoundException(nameof(Rapport), RapportId);
 
-            var groupedEquipements2 = rapport.Equipements
-               .Select(er => new EquipementAvecMesure
+            var groupedEquipements = rapport.Equipements
+               .Select(er => new EquipementAvecMesureVM
                {
                    GroupeNom = er.Equipement.Groupe.Nom,
                    EquipementVM = _mapper.Map(er.Equipement, er.Equipement.GetType(), typeof(EquipementVM)) as EquipementVM,
@@ -184,11 +159,10 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
                 DateDebut = rapport.DateDebut,
                 EntrepriseNom = entreprise.Nom,
                 EntrepriseId = entrepriseId,
-                GroupedEquipements = groupedEquipements2,
+                GroupedEquipements = groupedEquipements,
             };
 
             ViewData["DateDebut"] = rapport.DateDebut;
-
             return View("Upsert", VM);
         }
 
@@ -196,18 +170,21 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upsert(RapportDetailsVM VM)
         {
-
+            if (VM.GroupedEquipements is null || VM.GroupedEquipements.Count! < 0)
+                throw new Exception("Veuillez creer des equipements avant de creer un rapport");
 
             if (ModelState.IsValid)
             {
+                //flatten le dictionnaire et map la liste d'equipmentsGroupedAvecMesureVM en 
+                //EquipementRapport domain object pour etre ajouter a la database
                 var equipments = VM.GroupedEquipements
-              .SelectMany(ge => ge.Value)
-              .Select(em => new EquipementRapport
-              {
-                  EquipementId = em.EquipementVM.Id,
-                  Mesure = em.Mesure,
+                    .SelectMany(ge => ge.Value)
+                    .Select(em => new EquipementRapport
+                    {
+                        EquipementId = em.EquipementVM.Id,
+                        Mesure = em.Mesure,
 
-              });
+                    });
 
                 //create new rapport
                 Rapport rapport = new Rapport()
@@ -215,43 +192,47 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
                     DateDebut = VM.DateDebut,
                     Equipements = equipments.ToList()
                 };
+
                 if (VM.Id == 0)
                 {
-
+                    //On ajoute un rapport
                     _context.Rapports.Add(rapport);
                     await _context.SaveChangesAsync();
+
                     return RedirectToAction(nameof(Details), new { entrepriseId = VM.EntrepriseId, RapportId = rapport.Id });
 
                 }
                 else
                 {
-                    var rapportDomain = await _context.Rapports.Include(r => r.Equipements).SingleAsync(r=>r.Id == VM.Id);
+                    //On update un rapport
+                    var rapportDomain = await _context.Rapports.Include(r => r.Equipements).SingleAsync(r => r.Id == VM.Id);
                     rapportDomain.Equipements = rapport.Equipements;
 
                     _context.Rapports.Update(rapportDomain);
                     await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Details), new { entrepriseId = VM.EntrepriseId, RapportId = rapportDomain.Id });
 
+                    return RedirectToAction(nameof(Details), new { entrepriseId = VM.EntrepriseId, RapportId = rapportDomain.Id });
                 }
             }
+
+            //retourn la view si invalide model state
             return View(VM);
-            //if (VM.Id > 0)
-            //{
-            //    return View(nameof(Liste), new { id = VM.Id });
-            //}
-            //else
-            //{
-            //    return View(nameof(Index));
-            //}
+
+
         }
 
         public ILookup<string, (DateTime, int?)> GenerateMonthsBetween(DateTime from, DateTime end, IEnumerable<Rapport> rapports)
         {
 
+            //creer une collection de tuples (date,int?)
+            //date : date generee
+            //int? : id du rapport existant pour cette date
             ICollection<(DateTime, int?)> dates = new List<(DateTime, int?)>();
 
-
+            //Creer une queue pour faciliter le processus, lorsque un rapport a ete assigné à une date, on la retire de la queue 
+            //et traite les dates restantes 
             Queue<Rapport> _rapports = new Queue<Rapport>(rapports);
+
             while (from <= end)
             {
 
@@ -271,6 +252,8 @@ namespace CEGES_MVC.Areas.Analyse.Controllers
                 // pull out month and year
                 from = from.AddMonths(1);
             };
+
+
             return dates.ToLookup(date => date.Item1.Year.ToString());
         }
     }

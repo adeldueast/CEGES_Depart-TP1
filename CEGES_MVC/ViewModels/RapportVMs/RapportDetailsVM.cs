@@ -17,7 +17,7 @@ namespace CEGES_MVC.ViewModels.RapportVMs
 
         public int EntrepriseId { get; set; }
 
-        public Dictionary <string, List<EquipementAvecMesure>> GroupedEquipements { get; set; }
+        public Dictionary <string, List<EquipementAvecMesureVM>> GroupedEquipements { get; set; }
 
 
     }

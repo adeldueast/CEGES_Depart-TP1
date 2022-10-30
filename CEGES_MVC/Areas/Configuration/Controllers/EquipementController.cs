@@ -87,7 +87,7 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
             //Methode (2)
             //Mapp Domain entité vers VM
             var equipementVM = _mapper.Map(equipement, equipement.GetType(), typeof(EquipementVM)) as EquipementVM;
-          
+
 
 
             return View("Upsert", equipementVM);
@@ -103,8 +103,10 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
 
                 //map VM to Domain Entité utilisant _mapper 
                 var equipement = _mapper.Map(vm, vm.GetType(), typeof(Equipement)) as Equipement;
+                //declenche une erreur de foreign key constraint sans sa, manque de temps pour trouver l'origine de lerreur,donc  cela suffit
+                equipement.Groupe = null;
 
-                
+
                 var id = vm.Id == 0
                     ? await _equipementService.Add(equipement)
                     : await _equipementService.Update(equipement);

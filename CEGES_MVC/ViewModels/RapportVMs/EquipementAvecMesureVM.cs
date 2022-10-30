@@ -2,7 +2,7 @@
 
 namespace CEGES_MVC.ViewModels.RapportVMs
 {
-    public class EquipementAvecMesure
+    public class EquipementAvecMesureVM
     {
         public string GroupeNom { get; set; }
 

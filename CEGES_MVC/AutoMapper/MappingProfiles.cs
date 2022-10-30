@@ -28,7 +28,9 @@ namespace CEGES_MVC.AutoMapper
             #region Groupe mapping profiles
             CreateMap<Groupe, GroupeSummaryVM>()
                 .ForMember(dest => dest.EquipementCount, opt => opt.MapFrom(src => src.Equipements.Count));
-            CreateMap<Groupe, GroupeDetailsVM>();
+            CreateMap<Groupe, GroupeDetailsVM>()
+                .ForMember(dest => dest.EntrepriseNom, opt => opt.MapFrom(src => src.Entreprise.Nom));
+            ;
             #endregion
 
             #region Equipement mapping profiles
@@ -37,6 +39,7 @@ namespace CEGES_MVC.AutoMapper
                    .Include<EquipementConstant, EquipementConstantVM>()
                    .Include<EquipementLineaire, EquipementLineaireVM>()
                    .Include<EquipementRelatif, EquipementRelatifVM>()
+                   .ForMember(dest => dest.GroupeNom, opt => opt.MapFrom(src => src.Groupe.Nom))
                    .ReverseMap();
             CreateMap<EquipementConstant, EquipementConstantVM>().ReverseMap();
             CreateMap<EquipementLineaire, EquipementLineaireVM>().ReverseMap();
@@ -45,7 +48,13 @@ namespace CEGES_MVC.AutoMapper
 
             #endregion
 
+            #region Rapports mapping profiles
 
+            CreateMap<EntrepriseRapportsCount, EntrepriseRapportsCountVM>()
+          .ForMember(dest => dest.EntrepriseId, opt => opt.MapFrom(src => src.Entreprise.Id))
+          .ForMember(dest => dest.EntrepriseNom, opt => opt.MapFrom(src => src.Entreprise.Nom));
+
+            #endregion
 
         }
     }

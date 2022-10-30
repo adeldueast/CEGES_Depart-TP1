@@ -1,11 +1,12 @@
-﻿@using CEGES_Models
-@model IEnumerable<EntrepriseRapportsCount>
+﻿@using CEGES_MVC.ViewModels.RapportVMs
+@model IEnumerable<EntrepriseRapportsCountVM>
 @{
     ViewData["Title"] = "Analyse des entreprises";
 }
 <h3>
     Liste des entreprises
 </h3>
+
 <div class="row">
    @foreach (var entreprise in Model)
    {
@@ -13,20 +14,30 @@
             <div class="card h-100" style="min-width: 15rem; max-width: 18rem;">
                 <img src="/images/entreprise.png" class="card-img-top rounded" />
                 <div class="card-body">
-                    <p class="card-title h5 text-center"><b style="color:#2c3e50">@entreprise.Entreprise.Nom</b></p>
+                    <p class="card-title h5 text-center"><b style="color:#2c3e50">@entreprise.EntrepriseNom</b></p>
                     <div class="card-block">
                         <div class="row no-gutters">
                             <div class="col-md-7 text-right">
-                                Rapports&nbsp;:&nbsp;
+                                Période&nbsp;:&nbsp;
                             </div>
                             <div class="col-md-5 text-left">
-                                @entreprise.RapportsCount rapports
+                                @if (entreprise.RapportsCount > 0)
+                                {
+                                    @Html.Raw(@entreprise.RapportsCount +"&nbsp;")
+                                }
+                                else
+                                {
+                                    @Html.Raw("Aucune&nbsp;")
+
+                                }
+                             
+
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer text-center">
-                    <a asp-action="Liste" asp-route-id="@entreprise.Entreprise.Id" class="card-link">Details</a>
+                    <a asp-action="Liste" asp-route-id="@entreprise.EntrepriseId" class="card-link">Details</a>
                 </div>
             </div>
         </div>

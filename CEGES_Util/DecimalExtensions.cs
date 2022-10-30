@@ -1,6 +1,7 @@
 ﻿using DecimalMath;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace CEGES_Util
@@ -13,7 +14,7 @@ namespace CEGES_Util
                 return "0";
             
             decimal scale = DecimalEx.Pow(10, DecimalEx.Floor(DecimalEx.Log10(Math.Abs(d))) + 1);
-            return (scale * Decimal.Round(d / scale, digits)).ToString("G29");
+            return (scale * Decimal.Round(d / scale, digits)).ToString("G29", CultureInfo.CreateSpecificCulture("sv-SE"));
         }
 
         public static string RoundToSignificantDigitsAndUnit(this decimal d, int digits)

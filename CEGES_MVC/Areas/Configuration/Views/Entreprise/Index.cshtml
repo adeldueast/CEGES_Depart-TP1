@@ -22,7 +22,16 @@
                                 Groupe&nbsp;:&nbsp;
                             </div>
                             <div class="col-md-5 text-left">
-                                @entreprise.GroupesCount&nbsp;
+
+                                @if (entreprise.GroupesCount > 0)
+                                {
+                                    @Html.Raw(@entreprise.GroupesCount +"&nbsp;")
+                                }
+                                else{
+                                @Html.Raw("Aucun&nbsp;")
+
+                                }
+                                
                             </div>
                         </div>
                         <div class="row no-gutters">
@@ -30,15 +39,37 @@
                                 Équipement&nbsp;:&nbsp;
                             </div>
                             <div class="col-md-5 text-left">
-                                @entreprise.EquipementsCount&nbsp;
+
+                                @if (entreprise.EquipementsCount > 0)
+                                {
+                                    @Html.Raw(@entreprise.EquipementsCount +"&nbsp;")
+                                }
+                                else
+                                {
+                                    @Html.Raw("Aucun&nbsp;")
+
+                                }
+
+                              
                             </div>
                         </div>
                         <div class="row no-gutters">
                             <div class="col-md-7 text-right">
-                                Rapports&nbsp;:&nbsp;
+                                Période&nbsp;:&nbsp;
                             </div>
                             <div class="col-md-5 text-left">
-                                9&nbsp;
+
+                                @if (entreprise.RapportsCount > 0)
+                                {
+                                    @Html.Raw(@entreprise.RapportsCount +"&nbsp;")
+                                }
+                                else
+                                {
+                                    @Html.Raw("Aucune&nbsp;")
+
+                                }
+
+                             
                             </div>
                         </div>
                     </div>

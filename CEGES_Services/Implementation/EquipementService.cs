@@ -18,7 +18,7 @@ namespace CEGES_MVC.Implementation
 
         public async Task<Equipement> GetById(int id)
         {
-            var equipement = await _uow.Equipements.GetAsync(id);
+            var equipement = await _uow.Equipements.FirstOrDefaultAsync(e=>e.Id == id,includeProperties:"Groupe");
 
             if (equipement == null)
             {

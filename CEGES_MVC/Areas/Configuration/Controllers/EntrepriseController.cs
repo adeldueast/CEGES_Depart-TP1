@@ -31,7 +31,7 @@ namespace CEGES_MVC.Areas.Configuration.Controllers
                 Nom = entreprise.Nom,
                 GroupesCount = entreprise.Groupes.Count,
                 EquipementsCount = entreprise.Groupes.SelectMany(x => x.Equipements).Count(),
-                RapportsCount = entreprise.Groupes.SelectMany(g => g.Equipements).SelectMany(e => e.Rapports).Count(),
+                RapportsCount = entreprise.Groupes.SelectMany(g => g.Equipements).SelectMany(e => e.Rapports).Select(r=>r.RapportId).Distinct().Count(),
 
             }).ToList();
 

@@ -19,9 +19,9 @@ namespace CEGES_DataAccess.Repository.IRepository
         //These next queries are the new SPECIAL queries
         //Special in the sens that they dont just return a domain entity, like others
         //but return a custom result using .Select 
-        Task<EntrepriseRapports> GetByIdWithPeriods(int id);
+        Task<EntrepriseRapports> GetByIdWithRapports(int id);
 
-        Task<IEnumerable<EntrepriseRapportsCount>> GetAllWithPeriodsCount();
+        Task<IEnumerable<EntrepriseRapportsCount>> GetAllWithRapportsCount();
 
     }
 }

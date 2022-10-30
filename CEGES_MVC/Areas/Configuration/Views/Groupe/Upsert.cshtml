@@ -63,7 +63,7 @@
                                 <input type="submit" onclick="return validateInput()" class="btn btn-primary w-100" value="Ajouter" />
                             </div>
                             <div class="col">
-                                <a asp-controller="Entreprise" asp-action="Details" class="btn btn-secondary  col-10">
+                                <a asp-controller="Entreprise" asp-action="Details" asp-route-id="@Model.EntrepriseId" class="btn btn-secondary  col-10">
                                     <i class="fas fa-plus-circle"></i> &nbsp;Retour
                                 </a>
                             </div>

@@ -14,9 +14,8 @@ namespace CEGES_MVC.ViewModels.EquipementVMs
         public string UniteMesure { get; set; }
 
         [DisplayName("Facteur de conversion")]
-        public int FacteurConversion { get; set; }
+        public float FacteurConversion { get; set; }
 
-        public int Mesure { get; set; }
 
 
         public EquipementLineaireVM() : base(EquipementTypes.Lineaire,EquipementDescriptions.Lineaire)
@@ -24,9 +23,9 @@ namespace CEGES_MVC.ViewModels.EquipementVMs
 
         }
 
-        public override int CalculateMensuel(int mesure)
+        public override decimal CalculateMensuel(int mesure)
         {
-            return mesure * FacteurConversion;
+            return (decimal)(mesure * FacteurConversion);
         }
     }
 }

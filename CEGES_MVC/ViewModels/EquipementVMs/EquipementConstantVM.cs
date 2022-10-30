@@ -23,9 +23,9 @@ namespace CEGES_MVC.ViewModels.EquipementVMs
 
         }
 
-        public override int CalculateMensuel(int mesure)
+        public override decimal CalculateMensuel(int mesure)
         {
-            return (int)(Quantite * 30);
+            return (decimal)(Quantite * 30);
         }
 
     }
